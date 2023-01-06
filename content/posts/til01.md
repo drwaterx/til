@@ -5,6 +5,7 @@ draft: true
 ---
 
 When attempting to log-transform an array of values with NumPy, keep in mind
+
 - Given negative numbers and zeroes, NumPy will output `NaN` and `-inf`, respectively, along with a `RuntimeWarning`.  Such values can cause downstream processing to fail or behave unexpectedly.
 - `numpy.log` provides an argument to handle this situation
 - How that argument affects `numpy.log`'s behavior depends on whether the output goes to a preexisting container or if that container is created on the fly.
