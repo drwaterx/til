@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Today I learned</title>
-    <link>https://drwaterx.github.io/til/</link>
-    <description>Recent content on Today I learned</description>
+    <title>Posts on Today I learned</title>
+    <link>https://drwaterx.github.io/til/posts/</link>
+    <description>Recent content in Posts on Today I learned</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 05 Jan 2023 05:15:02 -0500</lastBuildDate><atom:link href="https://drwaterx.github.io/til/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 05 Jan 2023 05:15:02 -0500</lastBuildDate><atom:link href="https://drwaterx.github.io/til/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Handle non-sensical operations to avoid downstream errors</title>
       <link>https://drwaterx.github.io/til/posts/til01/</link>
