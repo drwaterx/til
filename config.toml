@@ -2,3 +2,23 @@ baseURL = 'https://drwaterx.github.io/til/'
 languageCode = 'en-us'
 title = "Aaron's D4ta blog"
 theme = 'PaperMod'
+
+[menu]
+[[menu.main]]
+name = "Archive"
+url = "archives"
+weight = 10
+
+[[menu.main]]
+name = "Tags"
+url = "tags"
+weight = 10
+
+[[menu.main]]
+name = "About"
+url = "/about/"
+weight = 10
+
+[[params.socialIcons]]
+name = "github"
+url = "https://github.com/drwaterx"

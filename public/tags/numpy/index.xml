@@ -9,10 +9,10 @@
     <lastBuildDate>Thu, 05 Jan 2023 05:15:02 -0500</lastBuildDate><atom:link href="https://drwaterx.github.io/til/tags/numpy/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Handle non-sensical operations to avoid downstream errors</title>
-      <link>https://drwaterx.github.io/til/posts/til01/</link>
+      <link>https://drwaterx.github.io/til/posts/numpy_nonsense/</link>
       <pubDate>Thu, 05 Jan 2023 05:15:02 -0500</pubDate>
       
-      <guid>https://drwaterx.github.io/til/posts/til01/</guid>
+      <guid>https://drwaterx.github.io/til/posts/numpy_nonsense/</guid>
       <description>When attempting to log-transform an array of values with NumPy, keep in mind
 Given negative numbers and zeroes, NumPy will output NaN and -inf, respectively, along with a RuntimeWarning. Such values can cause downstream processing to fail or behave unexpectedly. numpy.log provides an argument to handle this situation How that argument affects numpy.log&amp;rsquo;s behavior depends on whether the output goes to a preexisting container or if that container is created on the fly.</description>
     </item>
