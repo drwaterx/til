@@ -2,6 +2,9 @@
 title: "Handle non-sensical operations to avoid downstream errors"
 date: 2023-01-05T05:15:02-05:00
 draft: false
+author: "Aaron Slowey"
+tags: ["numpy"]
+categories: ["technical"]
 ---
 
 When attempting to log-transform an array of values with NumPy, keep in mind
