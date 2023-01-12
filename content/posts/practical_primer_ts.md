@@ -1,19 +1,18 @@
 ---
-title: "Practical_primer_ts"
+title: "Linear regression of time series"
 date: 2023-01-12T15:18:18-05:00
 draft: false
 author: "Aaron Slowey"
 tags: ["modeling", "statsmodels"]
 categories: ["technical"]
 ---
-Noto bene: this post is still under construction, in that there are some 
-images of graphs missing.
+
+This post is under construction, with missing graphs and unbaked LaTax math.
 
 # Time series regression
 
 The following text covers mostly _in-sample_ deconstruction of temporally
-sensitive effects that can be applied to other problems, including forecasting,
-which is written about in [[time_series_forecasting]].
+sensitive effects that can be applied to other problems, including forecasting.
 
 We denote a time series context with some additional subscripts:
 $$y_t = \alpha + \sum_{i=1}^m \beta_i x_{i,t} + \epsilon_t$$
