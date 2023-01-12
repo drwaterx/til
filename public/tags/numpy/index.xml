@@ -17,5 +17,15 @@
 Given negative numbers and zeroes, NumPy will output NaN and -inf, respectively, along with a RuntimeWarning. Such values can cause downstream processing to fail or behave unexpectedly. numpy.log provides an argument to handle this situation How that argument affects numpy.log&amp;rsquo;s behavior depends on whether the output goes to a preexisting container or if that container is created on the fly.</description>
     </item>
     
+    <item>
+      <title>Adventures in aggregation: Part 1</title>
+      <link>https://drwaterx.github.io/til/posts/gbadventures01/</link>
+      <pubDate>Fri, 12 Aug 2022 15:14:44 -0500</pubDate>
+      
+      <guid>https://drwaterx.github.io/til/posts/gbadventures01/</guid>
+      <description>It&amp;rsquo;s impossible to include an associated field value alongside an aggregate of another variable The mind sometimes has a way of creating a sensible objective that is non-sensical to a machine. We want to tabulate the make of the most expensive car in teh same row as its price. When you use the .agg method with a dictionary, you can end up with misaligned columns
+df = pd.DataFrame({&amp;#39;Sector&amp;#39;: [&amp;#39;auto&amp;#39;, &amp;#39;auto&amp;#39;, &amp;#39;auto&amp;#39;], &amp;#39;c&amp;#39;: [&amp;#39;ACME&amp;#39;, &amp;#39;GM&amp;#39;, &amp;#39;FORD&amp;#39;], &amp;#39;am&amp;#39;: [20.</description>
+    </item>
+    
   </channel>
 </rss>

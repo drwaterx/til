@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>data management on Aaron&#39;s D4ta blog</title>
+    <link>https://drwaterx.github.io/til/tags/data-management/</link>
+    <description>Recent content in data management on Aaron&#39;s D4ta blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 22 Jul 2022 14:34:27 -0500</lastBuildDate><atom:link href="https://drwaterx.github.io/til/tags/data-management/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Adventures in aggregation: Part 2</title>
+      <link>https://drwaterx.github.io/til/posts/gbadventures02/</link>
+      <pubDate>Fri, 22 Jul 2022 14:34:27 -0500</pubDate>
+      
+      <guid>https://drwaterx.github.io/til/posts/gbadventures02/</guid>
+      <description>Applying a function to a groupby object: Index implications While there are multiple syntaxes and methods to produce the same aggregated data, those variations produce different indices. The format and contents of the index can impact other processes, such as serialization and deserialization.
+Consider the following artificial transactional data.
+txns = pd.concat([pd.DataFrame({&amp;#39;dt&amp;#39;: pd.date_range(&amp;#34;2022&amp;#34;, freq=&amp;#34;D&amp;#34;, periods=10), &amp;#39;amount&amp;#39;: np.random.random(10), &amp;#39;segment&amp;#39;: [&amp;#39;ex&amp;#39;] * 10})] * 10, axis=0) dt amount segment (Timestamp(&amp;lsquo;2022-01-01 00:00:00&amp;rsquo;), 0) 2022-01-01 00:00:00 0.</description>
+    </item>
+    
+  </channel>
+</rss>

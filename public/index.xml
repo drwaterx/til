@@ -6,13 +6,24 @@
     <description>Recent content on Aaron&#39;s D4ta blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 12 Jan 2023 10:43:15 -0500</lastBuildDate><atom:link href="https://drwaterx.github.io/til/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 08 Jan 2023 15:18:18 -0500</lastBuildDate><atom:link href="https://drwaterx.github.io/til/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Linear regression of time series</title>
+      <link>https://drwaterx.github.io/til/posts/practical_primer_ts/</link>
+      <pubDate>Sun, 08 Jan 2023 15:18:18 -0500</pubDate>
+      
+      <guid>https://drwaterx.github.io/til/posts/practical_primer_ts/</guid>
+      <description>This post is under construction, with missing graphs and unbaked LaTax math.
+Time series regression The following text covers mostly in-sample deconstruction of temporally sensitive effects that can be applied to other problems, including forecasting.
+We denote a time series context with some additional subscripts: $$y_t = \alpha + \sum_{i=1}^m \beta_i x_{i,t} + \epsilon_t$$ The properties of variables that constitute $x$ determine what kind of time series regression we perform.</description>
+    </item>
+    
     <item>
       <title>About</title>
-      <link>https://drwaterx.github.io/til/about/about/</link>
-      <pubDate>Thu, 12 Jan 2023 10:43:15 -0500</pubDate>
+      <link>https://drwaterx.github.io/til/about/</link>
+      <pubDate>Sun, 08 Jan 2023 10:43:15 -0500</pubDate>
       
-      <guid>https://drwaterx.github.io/til/about/about/</guid>
+      <guid>https://drwaterx.github.io/til/about/</guid>
       <description>Today I learned something, and I learned it because I wrote about it to uncover what I still need to learn. And I&amp;rsquo;m sharing it with you for no other reason than it may be helpful for you to retrace the steps of my thought process, compare it to your own, and reach your own understanding.
 That retreading has been helpful to me.
 What I write about are solutions to problems I confront in my job, which at the moment involves processing and modeling commercial cash flows.</description>
