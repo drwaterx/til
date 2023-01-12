@@ -3,6 +3,8 @@ title: "Adventures in aggregation: Part 2"
 date: 2022-07-22T14:34:27-05:00
 draft: false
 author: "Aaron Slowey"
+tags: ["pandas", "data management"]
+categories: ["technical"]
 ---
 
 # Applying a function to a groupby object: Index implications

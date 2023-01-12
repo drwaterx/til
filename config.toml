@@ -4,10 +4,10 @@ title = "Aaron's D4ta blog"
 theme = 'PaperMod'
 
 [menu]
-[[menu.main]]
-name = "Archive"
-url = "archives"
-weight = 10
+#[[menu.main]]
+#name = "Archive"
+#url = "archives"
+#weight = 10
 
 [[menu.main]]
 name = "Tags"

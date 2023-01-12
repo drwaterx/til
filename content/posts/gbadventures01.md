@@ -3,6 +3,8 @@ title: "Adventures in aggregation: Part 1"
 date: 2022-08-12T15:14:44-05:00
 draft: false
 author: "Aaron Slowey"
+tags: ["pandas", "numpy"]
+categories: ["technical"]
 ---
 
 # It's impossible to include an _associated_ field value alongside an aggregate of another variable

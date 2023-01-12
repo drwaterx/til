@@ -3,6 +3,8 @@ title: "When slicing goes awry"
 date: 2022-11-15T11:21:31-05:00
 draft: false
 author: "Aaron Slowey"
+tags: ["pandas", "exception handling"]
+categories: ["technical"]
 ---
 
 # Slicing
