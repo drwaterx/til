@@ -5,11 +5,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>Handle non-sensical operations to avoid downstream errors | Today I learned</title>
-<meta name="keywords" content="">
+<title>Handle non-sensical operations to avoid downstream errors | Aaron&#39;s D4ta blog</title>
+<meta name="keywords" content="numpy">
 <meta name="description" content="When attempting to log-transform an array of values with NumPy, keep in mind
 Given negative numbers and zeroes, NumPy will output NaN and -inf, respectively, along with a RuntimeWarning. Such values can cause downstream processing to fail or behave unexpectedly. numpy.log provides an argument to handle this situation How that argument affects numpy.log&rsquo;s behavior depends on whether the output goes to a preexisting container or if that container is created on the fly.">
-<meta name="author" content="">
+<meta name="author" content="Aaron Slowey">
 <link rel="canonical" href="https://drwaterx.github.io/til/posts/til01/">
 <link crossorigin="anonymous" href="/til/assets/css/stylesheet.bccfefac377bc340f06c260aed1bddf49a4354816d7c570d6aac75a997986c95.css" integrity="sha256-vM/vrDd7w0DwbCYK7Rvd9JpDVIFtfFcNaqx1qZeYbJU=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/til/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
@@ -99,20 +99,24 @@ Given negative numbers and zeroes, NumPy will output NaN and -inf, respectively,
   "name": "Handle non-sensical operations to avoid downstream errors",
   "description": "When attempting to log-transform an array of values with NumPy, keep in mind\nGiven negative numbers and zeroes, NumPy will output NaN and -inf, respectively, along with a RuntimeWarning. Such values can cause downstream processing to fail or behave unexpectedly. numpy.log provides an argument to handle this situation How that argument affects numpy.log\u0026rsquo;s behavior depends on whether the output goes to a preexisting container or if that container is created on the fly.",
   "keywords": [
-    
+    "numpy"
   ],
   "articleBody": "When attempting to log-transform an array of values with NumPy, keep in mind\nGiven negative numbers and zeroes, NumPy will output NaN and -inf, respectively, along with a RuntimeWarning. Such values can cause downstream processing to fail or behave unexpectedly. numpy.log provides an argument to handle this situation How that argument affects numpy.log’s behavior depends on whether the output goes to a preexisting container or if that container is created on the fly. Consider this example:\nobservations = (np.log10(subject_data, where=column_name \u003e 0) .replace([np.inf, -np.inf], np.nan) .dropna() ) The where=column_name \u003e 0 argument will cause the logarithmic transformation to ignore rows where that column value is not greater than zero and instead place the original value. Any condition that evaluates to true or false can be used.\nIf observations did not exist prior, meaning it was uninitialized, locations of subject_data where the condition is False will result in observations remaining uninitialized in the corresponding positions. If you try this out, you will see NaN or maybe something like 6.952161e-310.\nIt may be better to initialize the output container, with zeroes, NaN, or whatever facilitates downstream use.\nLet’s say we have 6 values to transform, of which one is a zero and another is negative\nsummary = pd.DataFrame({'cat': ['a', 'a', 'b', 'c', 'c', 'c'], 'z': [33, 22, 44, 0, 11, -8]}) output = np.zeros(6) # Note that we just call np.log, without a literal assignment to output np.log(summary.z, out=output, where=summary.z \u003e 0) \u003e\u003e\u003e output \u003e\u003e\u003e array([3.49650756, 3.09104245, 3.78418963, 0. , 2.39789527, 0. ]) ",
   "wordCount" : "251",
   "inLanguage": "en",
   "datePublished": "2023-01-05T05:15:02-05:00",
   "dateModified": "2023-01-05T05:15:02-05:00",
+  "author":{
+    "@type": "Person",
+    "name": "Aaron Slowey"
+  },
   "mainEntityOfPage": {
     "@type": "WebPage",
     "@id": "https://drwaterx.github.io/til/posts/til01/"
   },
   "publisher": {
     "@type": "Organization",
-    "name": "Today I learned",
+    "name": "Aaron's D4ta blog",
     "logo": {
       "@type": "ImageObject",
       "url": "https://drwaterx.github.io/til/favicon.ico"
@@ -137,7 +141,7 @@ Given negative numbers and zeroes, NumPy will output NaN and -inf, respectively,
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://drwaterx.github.io/til/" accesskey="h" title="Today I learned (Alt + H)">Today I learned</a>
+            <a href="https://drwaterx.github.io/til/" accesskey="h" title="Aaron&#39;s D4ta blog (Alt + H)">Aaron&#39;s D4ta blog</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -173,7 +177,7 @@ Given negative numbers and zeroes, NumPy will output NaN and -inf, respectively,
     <h1 class="post-title">
       Handle non-sensical operations to avoid downstream errors
     </h1>
-    <div class="post-meta"><span title='2023-01-05 05:15:02 -0500 EST'>January 5, 2023</span>
+    <div class="post-meta"><span title='2023-01-05 05:15:02 -0500 EST'>January 5, 2023</span>&nbsp;·&nbsp;Aaron Slowey
 
 </div>
   </header> 
@@ -208,13 +212,14 @@ Given negative numbers and zeroes, NumPy will output NaN and -inf, respectively,
 
   <footer class="post-footer">
     <ul class="post-tags">
+      <li><a href="https://drwaterx.github.io/til/tags/numpy/">numpy</a></li>
     </ul>
   </footer>
 </article>
     </main>
     
 <footer class="footer">
-    <span>&copy; 2023 <a href="https://drwaterx.github.io/til/">Today I learned</a></span>
+    <span>&copy; 2023 <a href="https://drwaterx.github.io/til/">Aaron&#39;s D4ta blog</a></span>
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

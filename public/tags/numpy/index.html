@@ -5,11 +5,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>Tags | Aaron&#39;s D4ta blog</title>
+<title>numpy | Aaron&#39;s D4ta blog</title>
 <meta name="keywords" content="">
 <meta name="description" content="">
 <meta name="author" content="">
-<link rel="canonical" href="https://drwaterx.github.io/til/tags/">
+<link rel="canonical" href="https://drwaterx.github.io/til/tags/numpy/">
 <link crossorigin="anonymous" href="/til/assets/css/stylesheet.bccfefac377bc340f06c260aed1bddf49a4354816d7c570d6aac75a997986c95.css" integrity="sha256-vM/vrDd7w0DwbCYK7Rvd9JpDVIFtfFcNaqx1qZeYbJU=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://drwaterx.github.io/til/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://drwaterx.github.io/til/favicon-16x16.png">
@@ -18,7 +18,7 @@
 <link rel="mask-icon" href="https://drwaterx.github.io/til/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" type="application/rss+xml" href="https://drwaterx.github.io/til/tags/index.xml">
+<link rel="alternate" type="application/rss+xml" href="https://drwaterx.github.io/til/tags/numpy/index.xml">
 <noscript>
     <style>
         #theme-toggle,
@@ -55,13 +55,13 @@
         }
 
     </style>
-</noscript><meta property="og:title" content="Tags" />
+</noscript><meta property="og:title" content="numpy" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://drwaterx.github.io/til/tags/" />
+<meta property="og:url" content="https://drwaterx.github.io/til/tags/numpy/" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Tags"/>
+<meta name="twitter:title" content="numpy"/>
 <meta name="twitter:description" content=""/>
 
 </head>
@@ -109,16 +109,25 @@
         </ul>
     </nav>
 </header>
-<main class="main">
+<main class="main"> 
 <header class="page-header">
-    <h1>Tags</h1>
+  <h1>
+    numpy
+  </h1>
 </header>
 
-<ul class="terms-tags">
-    <li>
-        <a href="https://drwaterx.github.io/til/tags/numpy/">numpy <sup><strong><sup>1</sup></strong></sup> </a>
-    </li>
-</ul>
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Handle non-sensical operations to avoid downstream errors
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>When attempting to log-transform an array of values with NumPy, keep in mind
+Given negative numbers and zeroes, NumPy will output NaN and -inf, respectively, along with a RuntimeWarning. Such values can cause downstream processing to fail or behave unexpectedly. numpy.log provides an argument to handle this situation How that argument affects numpy.log’s behavior depends on whether the output goes to a preexisting container or if that container is created on the fly....</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-01-05 05:15:02 -0500 EST'>January 5, 2023</span>&nbsp;·&nbsp;Aaron Slowey</footer>
+  <a class="entry-link" aria-label="post link to Handle non-sensical operations to avoid downstream errors" href="https://drwaterx.github.io/til/posts/til01/"></a>
+</article>
     </main>
     
 <footer class="footer">

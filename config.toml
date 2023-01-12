@@ -1,4 +1,4 @@
 baseURL = 'https://drwaterx.github.io/til/'
 languageCode = 'en-us'
-title = 'Aaron\'s D4ata Blog'
+title = "Aaron's D4ta blog"
 theme = 'PaperMod'
