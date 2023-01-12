@@ -1,6 +1,6 @@
 ---
 title: "Linear regression of time series"
-date: 2023-01-12T15:18:18-05:00
+date: 2023-01-08T15:18:18-05:00
 draft: false
 author: "Aaron Slowey"
 tags: ["modeling", "statsmodels"]
@@ -710,7 +710,7 @@ rbf_7_4
 2.158667
 ```
 
-![[rbf_test1.png]]
+![RBF test](/rbf_test1.png)
 
 The periodic effect is clearly captured, with less amplitude compared to the AR
 seasonal components due to attenuation. Expect higher error as a cost of

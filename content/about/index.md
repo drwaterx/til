@@ -1,6 +1,6 @@
 ---
 title: "About"
-date: 2023-01-12T10:43:15-05:00
+date: 2023-01-08T10:43:15-05:00
 draft: false
 author: "Aaron Slowey"
 ---
