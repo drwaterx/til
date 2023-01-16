@@ -431,3 +431,10 @@ whether to remove extraneous variables, to improve our estimates of the
 remaining effects. To probe for surprises in production, we may deploy the more
 inclusive, though, problematic (collinearity, etc.) alongside the selected
 model.
+
+Binary variables and periodic components in the `AutoReg` model class 
+produce spiky or jagged forecasts. The variability common to
+real world data--something recurring _around_, rather than precisely _on_, a 
+particular day, attenuates the weight (coefficient) of the effect(s). 
+However, the attenuation may be unpredictably unstable. In the next post 
+in this series, we ask the model to learn how to relax periodic effects.
