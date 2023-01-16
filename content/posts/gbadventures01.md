@@ -1,5 +1,5 @@
 ---
-title: "Adventures in aggregation: Part 1"
+title: "That which is aggregated and its metadata"
 date: 2022-08-12T15:14:44-05:00
 draft: false
 author: "Aaron Slowey"
@@ -9,23 +9,42 @@ categories: ["technical"]
 
 # It's impossible to include an _associated_ field value alongside an aggregate of another variable
 
-The mind sometimes has a way of creating a sensible objective that is non-sensical to a machine.  We want to tabulate the make of the most expensive car in teh same row as its price.  When you use the `.agg` method with a dictionary, you can end up with misaligned columns
+Unlike ndarrays, DataFrames are often heterogeneous.  They are a more 
+complete map of how we think of a data __set__ as a whole.  When we alter 
+the structure of tabular data, often through aggregation of one field, we 
+want to include values from other fields.  This is an example of an issue 
+that arises at the interface of pandas and 
+scikit-learn, for which the `ColumnTransformer` was created.
+
+In the following example of car makes and fictitious carbon footprints,
+we want to tabulate the make of the most expensive car in the same row as its 
+footprint. The following code misaligns the rows, in that `TSLA`, not `GM`, is 
+associated with the maximum `cfp`.
 
 ```python
 df = pd.DataFrame({'Sector': ['auto', 'auto', 'auto'],
-                   'c': ['ACME', 'GM', 'FORD'],
-                   'am': [20.5, 900.10, 450.50]})
+                   'make': ['GM', 'TSLA', 'FORD'],
+                   'cfp': [20.5, 900.10, 450.50]})
                    
->>> df.groupby('Sector').agg({'c': 'first', 'am': 'max'})
+>>> df.groupby('Sector').agg({'make': 'first', 'cfp': 'max'})
 ```
 
-![[Pasted image 20220928143130.png]]
+| Sector   | make   |   cfp |
+|:---------|:-------|------:|
+| auto     | GM     | 900.1 |
 
-Note that the first company name was selected, as was the maximum amount; but ACME is not associated with $900.10!
+The grouping variable will replace any index, so we cannot simply set or add 
+`'make'` to the index and then `groupby`.
 
-As discovered in the more complicated example below, the grouping variable will replace any index, so we cannot simply set or add `'c'` to the index and then groupby.
+We can obtain the correct result in a limited number of cases. If the 
+dataframe is sorted descending, `.agg('first')` will align with `'max'`; if 
+sorted ascending, `'first'` aligns with `'min'`.  
 
-It's possible to have the first instance of one field alongside a summary of a variable, but they may be associated with different records.  If the dataframe is sorted descending, `.agg('first')` will align with `'max'`; if sorted ascending, `'first'` aligns with `'min'`.  But a quantile will not align to `first` or `last`; `nth` could be determined by locating the quantile value, as long as `np.quantile` outputs an observed value and not an interpolation, which it may do by default.  Alternatively, merge tables on the quantile, again with NumPy instructed to output the observation nearest 'true' quantile.  To do that, use `interpolation='nearest'`.
+A quantile of one field will not align to the `first` or `last` instance of 
+another, but it could be located as long as `np.quantile` outputs an 
+observed value and not an interpolation.  
+Alternatively, merge tables on the quantile, with NumPy outputting the 
+observation nearest the quantile by setting `method='nearest'`.
 
 ```python
 def sector_quantilians(data: pd.DataFrame,

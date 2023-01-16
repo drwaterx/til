@@ -1,13 +1,11 @@
 ---
-title: "Adventures in aggregation: Part 2"
+title: "Aggregation: Implications of indexing"
 date: 2022-07-22T14:34:27-05:00
 draft: false
 author: "Aaron Slowey"
 tags: ["pandas", "data management"]
 categories: ["technical"]
 ---
-
-# Applying a function to a groupby object: Index implications
 
 While there are multiple syntaxes and methods to produce the same aggregated
 data, those variations produce different indices. The format and contents of the
@@ -38,7 +36,7 @@ more days. In this exercise, we try different approaches and pick one that
 yields the desired index. With any approach, `.groupby` places the grouping
 variable into the index of any aggregated DataFrame.
 
-1. Apply a `lambda` function directly to the groupby object (gbo), in which `x`
+Apply a `lambda` function directly to the groupby object (gbo), in which `x`
    is the row of the _aggregated_ `DataFrame` per the gbo directive. In this
    approach, we specify the column(s) with which to rank the instances. If
    present, other columns will be returned...
@@ -90,7 +88,7 @@ combines_ with the original index to form a `MultiIndex`:
 
 ```python
 txnsg = (txns.groupby('dt').apply(lambda x: x.nlargest(3, 'amount'))
-         )[0:9]
+        )[0:9]
 print(txnsg.index)
 ```
 
@@ -143,7 +141,7 @@ indices are retained:
 (txns.groupby('dt', group_keys=False)
      .apply(lambda x: x.nlargest(3, 'amount'))
      .loc[:, 'amount']
- )[0:9]
+)[0:9]
 ```
 
 ```table
@@ -164,7 +162,7 @@ indices `as_index=False`:
 
 ```python
 (txns.groupby('dt', as_index=False, group_keys=True).apply(
-   lambda x: x.nlargest(3, 'amount'))
+    lambda x: x.nlargest(3, 'amount'))
  .loc[:, 'amount']
  )[0:9]
 ```

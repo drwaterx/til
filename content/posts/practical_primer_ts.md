@@ -1,18 +1,43 @@
 ---
-title: "Linear regression of time series"
+title: "Explainable insights from linear regression of time series"
 date: 2023-01-08T15:18:18-05:00
 draft: false
 author: "Aaron Slowey"
+math: true
 tags: ["modeling", "statsmodels"]
 categories: ["technical"]
 ---
 
 This post is under construction, with missing graphs and unbaked LaTax math.
 
-# Time series regression
+It's a cliche that linear models are "explainable."  And yet, when we 
+attempt to produce insights that are salient to business, and produce them 
+from the kind of data representing, let's say, tens of thousands of cases, 
+you will quickly find characteristics of the data that appreciably erode the 
+veracity and salience of supposed insights.
 
-The following text covers mostly _in-sample_ deconstruction of temporally
-sensitive effects that can be applied to other problems, including forecasting.
+This is especially the case when applying canned routines in general, and 
+I've found, time series 'forecasting' packages in particular.  At no fault 
+of their developers, such packages are riddled with potential user missteps, 
+since they abstract away a lot of the 
+details of how data are prepared for modeling.  The fidelity between the 
+temporal structure of the time series and the parameters of the model are 
+one of the more reliable missteps one can take.  
+
+Packages like `statsmodels.
+tsa` are workhorses, but do not check, for instance, whether a daily time 
+series contains only business days, while the user has specified a 
+'seasonality' period of 7.  But when I started using it, I was not sure if 
+it did or not, and so I created artificial data with known structural 
+infidelities and effects and observed how `statsmodels` responded, and what 
+distortions ensued.  This post is a recounting of some of those experiments.
+
+The following covers mostly _in-sample_ deconstruction of temporally
+sensitive effects that can be applied to a variety of problems, including 
+forecasting.  I mention this because in my work at least, the goal is not 
+just to predict the future but understand temporal patterns and 
+relationships, since capacity is inextricably linked to maintenance costs, 
+failure risk, and other things that _really_ matter in business.
 
 We denote a time series context with some additional subscripts:
 $$y_t = \alpha + \sum_{i=1}^m \beta_i x_{i,t} + \epsilon_t$$

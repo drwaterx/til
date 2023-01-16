@@ -8,14 +8,14 @@
     <language>en-us</language>
     <lastBuildDate>Sun, 08 Jan 2023 15:18:18 -0500</lastBuildDate><atom:link href="https://drwaterx.github.io/til/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Linear regression of time series</title>
+      <title>Explainable insights from linear regression of time series</title>
       <link>https://drwaterx.github.io/til/posts/practical_primer_ts/</link>
       <pubDate>Sun, 08 Jan 2023 15:18:18 -0500</pubDate>
       
       <guid>https://drwaterx.github.io/til/posts/practical_primer_ts/</guid>
       <description>This post is under construction, with missing graphs and unbaked LaTax math.
-Time series regression The following text covers mostly in-sample deconstruction of temporally sensitive effects that can be applied to other problems, including forecasting.
-We denote a time series context with some additional subscripts: $$y_t = \alpha + \sum_{i=1}^m \beta_i x_{i,t} + \epsilon_t$$ The properties of variables that constitute $x$ determine what kind of time series regression we perform.</description>
+It&amp;rsquo;s a cliche that linear models are &amp;ldquo;explainable.&amp;rdquo; And yet, when we attempt to produce insights that are salient to business, and produce them from the kind of data representing, let&amp;rsquo;s say, tens of thousands of cases, you will quickly find characteristics of the data that appreciably erode the veracity and salience of supposed insights.
+This is especially the case when applying canned routines in general, and I&amp;rsquo;ve found, time series &amp;lsquo;forecasting&amp;rsquo; packages in particular.</description>
     </item>
     
     <item>
@@ -29,35 +29,33 @@ Given negative numbers and zeroes, NumPy will output NaN and -inf, respectively,
     </item>
     
     <item>
-      <title>When slicing goes awry</title>
+      <title>Slice well</title>
       <link>https://drwaterx.github.io/til/posts/slices_awry/</link>
       <pubDate>Tue, 15 Nov 2022 11:21:31 -0500</pubDate>
       
       <guid>https://drwaterx.github.io/til/posts/slices_awry/</guid>
-      <description>Slicing In this post, I briefly review a few methods to select rows and/or columns of a DataFrame that satisfy one or more criteria. I then introduce an additional requirement that arises frequently in practice, that being slicing with previously unknown criteria.
-Levering multiIndexes I often find pandas&amp;rsquo; multiIndex to be more helpful than its rare use among colleagues would suggest.
-Pandas&amp;rsquo; .xs method is a clean way to select instances, as it can be executed in a piecewise sequence of criteria.</description>
+      <description>In this post, I briefly review a few methods to select rows and/or columns of a DataFrame that satisfy one or more criteria. I then introduce two additional requirements that arises frequently in practice&amp;ndash;slicing with previously unknown criteria and managing serialization and deserialization to recover the desired data structure.
+Lever multiIndexes I often find pandas&amp;rsquo; multiIndex to be helpful, although I do not observe it used very often. With a multi-indexed DataFrame, pandas&amp;rsquo; .</description>
     </item>
     
     <item>
-      <title>Adventures in aggregation: Part 1</title>
+      <title>That which is aggregated and its metadata</title>
       <link>https://drwaterx.github.io/til/posts/gbadventures01/</link>
       <pubDate>Fri, 12 Aug 2022 15:14:44 -0500</pubDate>
       
       <guid>https://drwaterx.github.io/til/posts/gbadventures01/</guid>
-      <description>It&amp;rsquo;s impossible to include an associated field value alongside an aggregate of another variable The mind sometimes has a way of creating a sensible objective that is non-sensical to a machine. We want to tabulate the make of the most expensive car in teh same row as its price. When you use the .agg method with a dictionary, you can end up with misaligned columns
-df = pd.DataFrame({&amp;#39;Sector&amp;#39;: [&amp;#39;auto&amp;#39;, &amp;#39;auto&amp;#39;, &amp;#39;auto&amp;#39;], &amp;#39;c&amp;#39;: [&amp;#39;ACME&amp;#39;, &amp;#39;GM&amp;#39;, &amp;#39;FORD&amp;#39;], &amp;#39;am&amp;#39;: [20.</description>
+      <description>It&amp;rsquo;s impossible to include an associated field value alongside an aggregate of another variable Unlike ndarrays, DataFrames are often heterogeneous. They are a more complete map of how we think of a data set as a whole. When we alter the structure of tabular data, often through aggregation of one field, we want to include values from other fields. This is an example of an issue that arises at the interface of pandas and scikit-learn, for which the ColumnTransformer was created.</description>
     </item>
     
     <item>
-      <title>Adventures in aggregation: Part 2</title>
+      <title>Aggregation: Implications of indexing</title>
       <link>https://drwaterx.github.io/til/posts/gbadventures02/</link>
       <pubDate>Fri, 22 Jul 2022 14:34:27 -0500</pubDate>
       
       <guid>https://drwaterx.github.io/til/posts/gbadventures02/</guid>
-      <description>Applying a function to a groupby object: Index implications While there are multiple syntaxes and methods to produce the same aggregated data, those variations produce different indices. The format and contents of the index can impact other processes, such as serialization and deserialization.
+      <description>While there are multiple syntaxes and methods to produce the same aggregated data, those variations produce different indices. The format and contents of the index can impact other processes, such as serialization and deserialization.
 Consider the following artificial transactional data.
-txns = pd.concat([pd.DataFrame({&amp;#39;dt&amp;#39;: pd.date_range(&amp;#34;2022&amp;#34;, freq=&amp;#34;D&amp;#34;, periods=10), &amp;#39;amount&amp;#39;: np.random.random(10), &amp;#39;segment&amp;#39;: [&amp;#39;ex&amp;#39;] * 10})] * 10, axis=0) dt amount segment (Timestamp(&amp;lsquo;2022-01-01 00:00:00&amp;rsquo;), 0) 2022-01-01 00:00:00 0.</description>
+txns = pd.concat([pd.DataFrame({&amp;#39;dt&amp;#39;: pd.date_range(&amp;#34;2022&amp;#34;, freq=&amp;#34;D&amp;#34;, periods=10), &amp;#39;amount&amp;#39;: np.random.random(10), &amp;#39;segment&amp;#39;: [&amp;#39;ex&amp;#39;] * 10})] * 10, axis=0) dt amount segment (Timestamp(&amp;lsquo;2022-01-01 00:00:00&amp;rsquo;), 0) 2022-01-01 00:00:00 0.992821 ex (Timestamp(&amp;lsquo;2022-01-01 00:00:00&amp;rsquo;), 0) 2022-01-01 00:00:00 0.</description>
     </item>
     
   </channel>

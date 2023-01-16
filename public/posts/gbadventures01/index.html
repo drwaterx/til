@@ -5,10 +5,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>Adventures in aggregation: Part 1 | Aaron&#39;s D4ta blog</title>
+<title>That which is aggregated and its metadata | Aaron&#39;s D4ta blog</title>
 <meta name="keywords" content="pandas, numpy">
-<meta name="description" content="It&rsquo;s impossible to include an associated field value alongside an aggregate of another variable The mind sometimes has a way of creating a sensible objective that is non-sensical to a machine. We want to tabulate the make of the most expensive car in teh same row as its price. When you use the .agg method with a dictionary, you can end up with misaligned columns
-df = pd.DataFrame({&#39;Sector&#39;: [&#39;auto&#39;, &#39;auto&#39;, &#39;auto&#39;], &#39;c&#39;: [&#39;ACME&#39;, &#39;GM&#39;, &#39;FORD&#39;], &#39;am&#39;: [20.">
+<meta name="description" content="It&rsquo;s impossible to include an associated field value alongside an aggregate of another variable Unlike ndarrays, DataFrames are often heterogeneous. They are a more complete map of how we think of a data set as a whole. When we alter the structure of tabular data, often through aggregation of one field, we want to include values from other fields. This is an example of an issue that arises at the interface of pandas and scikit-learn, for which the ColumnTransformer was created.">
 <meta name="author" content="Aaron Slowey">
 <link rel="canonical" href="https://drwaterx.github.io/til/posts/gbadventures01/">
 <link crossorigin="anonymous" href="/til/assets/css/stylesheet.bccfefac377bc340f06c260aed1bddf49a4354816d7c570d6aac75a997986c95.css" integrity="sha256-vM/vrDd7w0DwbCYK7Rvd9JpDVIFtfFcNaqx1qZeYbJU=" rel="preload stylesheet" as="style">
@@ -57,18 +56,17 @@ df = pd.DataFrame({&#39;Sector&#39;: [&#39;auto&#39;, &#39;auto&#39;, &#39;auto&
         }
 
     </style>
-</noscript><meta property="og:title" content="Adventures in aggregation: Part 1" />
-<meta property="og:description" content="It&rsquo;s impossible to include an associated field value alongside an aggregate of another variable The mind sometimes has a way of creating a sensible objective that is non-sensical to a machine. We want to tabulate the make of the most expensive car in teh same row as its price. When you use the .agg method with a dictionary, you can end up with misaligned columns
-df = pd.DataFrame({&#39;Sector&#39;: [&#39;auto&#39;, &#39;auto&#39;, &#39;auto&#39;], &#39;c&#39;: [&#39;ACME&#39;, &#39;GM&#39;, &#39;FORD&#39;], &#39;am&#39;: [20." />
+</noscript>
+<meta property="og:title" content="That which is aggregated and its metadata" />
+<meta property="og:description" content="It&rsquo;s impossible to include an associated field value alongside an aggregate of another variable Unlike ndarrays, DataFrames are often heterogeneous. They are a more complete map of how we think of a data set as a whole. When we alter the structure of tabular data, often through aggregation of one field, we want to include values from other fields. This is an example of an issue that arises at the interface of pandas and scikit-learn, for which the ColumnTransformer was created." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://drwaterx.github.io/til/posts/gbadventures01/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-08-12T15:14:44-05:00" />
 <meta property="article:modified_time" content="2022-08-12T15:14:44-05:00" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Adventures in aggregation: Part 1"/>
-<meta name="twitter:description" content="It&rsquo;s impossible to include an associated field value alongside an aggregate of another variable The mind sometimes has a way of creating a sensible objective that is non-sensical to a machine. We want to tabulate the make of the most expensive car in teh same row as its price. When you use the .agg method with a dictionary, you can end up with misaligned columns
-df = pd.DataFrame({&#39;Sector&#39;: [&#39;auto&#39;, &#39;auto&#39;, &#39;auto&#39;], &#39;c&#39;: [&#39;ACME&#39;, &#39;GM&#39;, &#39;FORD&#39;], &#39;am&#39;: [20."/>
+<meta name="twitter:title" content="That which is aggregated and its metadata"/>
+<meta name="twitter:description" content="It&rsquo;s impossible to include an associated field value alongside an aggregate of another variable Unlike ndarrays, DataFrames are often heterogeneous. They are a more complete map of how we think of a data set as a whole. When we alter the structure of tabular data, often through aggregation of one field, we want to include values from other fields. This is an example of an issue that arises at the interface of pandas and scikit-learn, for which the ColumnTransformer was created."/>
 
 
 <script type="application/ld+json">
@@ -85,7 +83,7 @@ df = pd.DataFrame({&#39;Sector&#39;: [&#39;auto&#39;, &#39;auto&#39;, &#39;auto&
     {
       "@type": "ListItem",
       "position":  2 ,
-      "name": "Adventures in aggregation: Part 1",
+      "name": "That which is aggregated and its metadata",
       "item": "https://drwaterx.github.io/til/posts/gbadventures01/"
     }
   ]
@@ -95,14 +93,14 @@ df = pd.DataFrame({&#39;Sector&#39;: [&#39;auto&#39;, &#39;auto&#39;, &#39;auto&
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  "headline": "Adventures in aggregation: Part 1",
-  "name": "Adventures in aggregation: Part 1",
-  "description": "It\u0026rsquo;s impossible to include an associated field value alongside an aggregate of another variable The mind sometimes has a way of creating a sensible objective that is non-sensical to a machine. We want to tabulate the make of the most expensive car in teh same row as its price. When you use the .agg method with a dictionary, you can end up with misaligned columns\ndf = pd.DataFrame({\u0026#39;Sector\u0026#39;: [\u0026#39;auto\u0026#39;, \u0026#39;auto\u0026#39;, \u0026#39;auto\u0026#39;], \u0026#39;c\u0026#39;: [\u0026#39;ACME\u0026#39;, \u0026#39;GM\u0026#39;, \u0026#39;FORD\u0026#39;], \u0026#39;am\u0026#39;: [20.",
+  "headline": "That which is aggregated and its metadata",
+  "name": "That which is aggregated and its metadata",
+  "description": "It\u0026rsquo;s impossible to include an associated field value alongside an aggregate of another variable Unlike ndarrays, DataFrames are often heterogeneous. They are a more complete map of how we think of a data set as a whole. When we alter the structure of tabular data, often through aggregation of one field, we want to include values from other fields. This is an example of an issue that arises at the interface of pandas and scikit-learn, for which the ColumnTransformer was created.",
   "keywords": [
     "pandas", "numpy"
   ],
-  "articleBody": "It’s impossible to include an associated field value alongside an aggregate of another variable The mind sometimes has a way of creating a sensible objective that is non-sensical to a machine. We want to tabulate the make of the most expensive car in teh same row as its price. When you use the .agg method with a dictionary, you can end up with misaligned columns\ndf = pd.DataFrame({'Sector': ['auto', 'auto', 'auto'], 'c': ['ACME', 'GM', 'FORD'], 'am': [20.5, 900.10, 450.50]}) \u003e\u003e\u003e df.groupby('Sector').agg({'c': 'first', 'am': 'max'}) ![[Pasted image 20220928143130.png]]\nNote that the first company name was selected, as was the maximum amount; but ACME is not associated with $900.10!\nAs discovered in the more complicated example below, the grouping variable will replace any index, so we cannot simply set or add 'c' to the index and then groupby.\nIt’s possible to have the first instance of one field alongside a summary of a variable, but they may be associated with different records. If the dataframe is sorted descending, .agg('first') will align with 'max'; if sorted ascending, 'first' aligns with 'min'. But a quantile will not align to first or last; nth could be determined by locating the quantile value, as long as np.quantile outputs an observed value and not an interpolation, which it may do by default. Alternatively, merge tables on the quantile, again with NumPy instructed to output the observation nearest ’true’ quantile. To do that, use interpolation='nearest'.\ndef sector_quantilians(data: pd.DataFrame, quantile: float, group_field: str = 'Sector', metric: str = 'AMOUNT' ): print(f\"{quantile:%}-ile of {metric} for {group_field}\") return data.groupby(group_field, observed=True)[metric].apply( lambda x: np.quantile(x, quantile, interpolation='nearest')) ",
-  "wordCount" : "264",
+  "articleBody": "It’s impossible to include an associated field value alongside an aggregate of another variable Unlike ndarrays, DataFrames are often heterogeneous. They are a more complete map of how we think of a data set as a whole. When we alter the structure of tabular data, often through aggregation of one field, we want to include values from other fields. This is an example of an issue that arises at the interface of pandas and scikit-learn, for which the ColumnTransformer was created.\nIn the following example of car makes and fictitious carbon footprints, we want to tabulate the make of the most expensive car in the same row as its footprint. The following code misaligns the rows, in that TSLA, not GM, is associated with the maximum cfp.\ndf = pd.DataFrame({'Sector': ['auto', 'auto', 'auto'], 'make': ['GM', 'TSLA', 'FORD'], 'cfp': [20.5, 900.10, 450.50]}) \u003e\u003e\u003e df.groupby('Sector').agg({'make': 'first', 'cfp': 'max'}) Sector make cfp auto GM 900.1 The grouping variable will replace any index, so we cannot simply set or add 'make' to the index and then groupby.\nWe can obtain the correct result in a limited number of cases. If the dataframe is sorted descending, .agg('first') will align with 'max'; if sorted ascending, 'first' aligns with 'min'.\nA quantile of one field will not align to the first or last instance of another, but it could be located as long as np.quantile outputs an observed value and not an interpolation.\nAlternatively, merge tables on the quantile, with NumPy outputting the observation nearest the quantile by setting method='nearest'.\ndef sector_quantilians(data: pd.DataFrame, quantile: float, group_field: str = 'Sector', metric: str = 'AMOUNT' ): print(f\"{quantile:%}-ile of {metric} for {group_field}\") return data.groupby(group_field, observed=True)[metric].apply( lambda x: np.quantile(x, quantile, interpolation='nearest')) ",
+  "wordCount" : "280",
   "inLanguage": "en",
   "datePublished": "2022-08-12T15:14:44-05:00",
   "dateModified": "2022-08-12T15:14:44-05:00",
@@ -185,23 +183,54 @@ df = pd.DataFrame({&#39;Sector&#39;: [&#39;auto&#39;, &#39;auto&#39;, &#39;auto&
   <header class="post-header">
     
     <h1 class="post-title">
-      Adventures in aggregation: Part 1
+      That which is aggregated and its metadata
     </h1>
     <div class="post-meta"><span title='2022-08-12 15:14:44 -0500 -0500'>August 12, 2022</span>&nbsp;·&nbsp;Aaron Slowey
 
 </div>
   </header> 
   <div class="post-content"><h1 id="its-impossible-to-include-an-_associated_-field-value-alongside-an-aggregate-of-another-variable">It&rsquo;s impossible to include an <em>associated</em> field value alongside an aggregate of another variable<a hidden class="anchor" aria-hidden="true" href="#its-impossible-to-include-an-_associated_-field-value-alongside-an-aggregate-of-another-variable">#</a></h1>
-<p>The mind sometimes has a way of creating a sensible objective that is non-sensical to a machine.  We want to tabulate the make of the most expensive car in teh same row as its price.  When you use the <code>.agg</code> method with a dictionary, you can end up with misaligned columns</p>
+<p>Unlike ndarrays, DataFrames are often heterogeneous.  They are a more
+complete map of how we think of a data <strong>set</strong> as a whole.  When we alter
+the structure of tabular data, often through aggregation of one field, we
+want to include values from other fields.  This is an example of an issue
+that arises at the interface of pandas and
+scikit-learn, for which the <code>ColumnTransformer</code> was created.</p>
+<p>In the following example of car makes and fictitious carbon footprints,
+we want to tabulate the make of the most expensive car in the same row as its
+footprint. The following code misaligns the rows, in that <code>TSLA</code>, not <code>GM</code>, is
+associated with the maximum <code>cfp</code>.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame({<span style="color:#e6db74">&#39;Sector&#39;</span>: [<span style="color:#e6db74">&#39;auto&#39;</span>, <span style="color:#e6db74">&#39;auto&#39;</span>, <span style="color:#e6db74">&#39;auto&#39;</span>],
-</span></span><span style="display:flex;"><span>                   <span style="color:#e6db74">&#39;c&#39;</span>: [<span style="color:#e6db74">&#39;ACME&#39;</span>, <span style="color:#e6db74">&#39;GM&#39;</span>, <span style="color:#e6db74">&#39;FORD&#39;</span>],
-</span></span><span style="display:flex;"><span>                   <span style="color:#e6db74">&#39;am&#39;</span>: [<span style="color:#ae81ff">20.5</span>, <span style="color:#ae81ff">900.10</span>, <span style="color:#ae81ff">450.50</span>]})
+</span></span><span style="display:flex;"><span>                   <span style="color:#e6db74">&#39;make&#39;</span>: [<span style="color:#e6db74">&#39;GM&#39;</span>, <span style="color:#e6db74">&#39;TSLA&#39;</span>, <span style="color:#e6db74">&#39;FORD&#39;</span>],
+</span></span><span style="display:flex;"><span>                   <span style="color:#e6db74">&#39;cfp&#39;</span>: [<span style="color:#ae81ff">20.5</span>, <span style="color:#ae81ff">900.10</span>, <span style="color:#ae81ff">450.50</span>]})
 </span></span><span style="display:flex;"><span>                   
-</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> df<span style="color:#f92672">.</span>groupby(<span style="color:#e6db74">&#39;Sector&#39;</span>)<span style="color:#f92672">.</span>agg({<span style="color:#e6db74">&#39;c&#39;</span>: <span style="color:#e6db74">&#39;first&#39;</span>, <span style="color:#e6db74">&#39;am&#39;</span>: <span style="color:#e6db74">&#39;max&#39;</span>})
-</span></span></code></pre></div><p>![[Pasted image 20220928143130.png]]</p>
-<p>Note that the first company name was selected, as was the maximum amount; but ACME is not associated with $900.10!</p>
-<p>As discovered in the more complicated example below, the grouping variable will replace any index, so we cannot simply set or add <code>'c'</code> to the index and then groupby.</p>
-<p>It&rsquo;s possible to have the first instance of one field alongside a summary of a variable, but they may be associated with different records.  If the dataframe is sorted descending, <code>.agg('first')</code> will align with <code>'max'</code>; if sorted ascending, <code>'first'</code> aligns with <code>'min'</code>.  But a quantile will not align to <code>first</code> or <code>last</code>; <code>nth</code> could be determined by locating the quantile value, as long as <code>np.quantile</code> outputs an observed value and not an interpolation, which it may do by default.  Alternatively, merge tables on the quantile, again with NumPy instructed to output the observation nearest &rsquo;true&rsquo; quantile.  To do that, use <code>interpolation='nearest'</code>.</p>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> df<span style="color:#f92672">.</span>groupby(<span style="color:#e6db74">&#39;Sector&#39;</span>)<span style="color:#f92672">.</span>agg({<span style="color:#e6db74">&#39;make&#39;</span>: <span style="color:#e6db74">&#39;first&#39;</span>, <span style="color:#e6db74">&#39;cfp&#39;</span>: <span style="color:#e6db74">&#39;max&#39;</span>})
+</span></span></code></pre></div><table>
+<thead>
+<tr>
+<th style="text-align:left">Sector</th>
+<th style="text-align:left">make</th>
+<th style="text-align:right">cfp</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">auto</td>
+<td style="text-align:left">GM</td>
+<td style="text-align:right">900.1</td>
+</tr>
+</tbody>
+</table>
+<p>The grouping variable will replace any index, so we cannot simply set or add
+<code>'make'</code> to the index and then <code>groupby</code>.</p>
+<p>We can obtain the correct result in a limited number of cases. If the
+dataframe is sorted descending, <code>.agg('first')</code> will align with <code>'max'</code>; if
+sorted ascending, <code>'first'</code> aligns with <code>'min'</code>.</p>
+<p>A quantile of one field will not align to the <code>first</code> or <code>last</code> instance of
+another, but it could be located as long as <code>np.quantile</code> outputs an
+observed value and not an interpolation.<br>
+Alternatively, merge tables on the quantile, with NumPy outputting the
+observation nearest the quantile by setting <code>method='nearest'</code>.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">sector_quantilians</span>(data: pd<span style="color:#f92672">.</span>DataFrame,
 </span></span><span style="display:flex;"><span>                       quantile: float,
 </span></span><span style="display:flex;"><span>                       group_field: str <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Sector&#39;</span>,

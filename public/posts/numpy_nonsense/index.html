@@ -57,7 +57,8 @@ Given negative numbers and zeroes, NumPy will output NaN and -inf, respectively,
         }
 
     </style>
-</noscript><meta property="og:title" content="Handle non-sensical operations to avoid downstream errors" />
+</noscript>
+<meta property="og:title" content="Handle non-sensical operations to avoid downstream errors" />
 <meta property="og:description" content="When attempting to log-transform an array of values with NumPy, keep in mind
 Given negative numbers and zeroes, NumPy will output NaN and -inf, respectively, along with a RuntimeWarning. Such values can cause downstream processing to fail or behave unexpectedly. numpy.log provides an argument to handle this situation How that argument affects numpy.log&rsquo;s behavior depends on whether the output goes to a preexisting container or if that container is created on the fly." />
 <meta property="og:type" content="article" />
@@ -101,8 +102,8 @@ Given negative numbers and zeroes, NumPy will output NaN and -inf, respectively,
   "keywords": [
     "numpy"
   ],
-  "articleBody": "When attempting to log-transform an array of values with NumPy, keep in mind\nGiven negative numbers and zeroes, NumPy will output NaN and -inf, respectively, along with a RuntimeWarning. Such values can cause downstream processing to fail or behave unexpectedly. numpy.log provides an argument to handle this situation How that argument affects numpy.log’s behavior depends on whether the output goes to a preexisting container or if that container is created on the fly. Consider this example:\nobservations = (np.log10(subject_data, where=column_name \u003e 0) .replace([np.inf, -np.inf], np.nan) .dropna() ) The where=column_name \u003e 0 argument will cause the logarithmic transformation to ignore rows where that column value is not greater than zero and instead place the original value. Any condition that evaluates to true or false can be used.\nIf observations did not exist prior, meaning it was uninitialized, locations of subject_data where the condition is False will result in observations remaining uninitialized in the corresponding positions. If you try this out, you will see NaN or maybe something like 6.952161e-310.\nIt may be better to initialize the output container, with zeroes, NaN, or whatever facilitates downstream use.\nLet’s say we have 6 values to transform, of which one is a zero and another is negative\nsummary = pd.DataFrame({'cat': ['a', 'a', 'b', 'c', 'c', 'c'], 'z': [33, 22, 44, 0, 11, -8]}) output = np.zeros(6) # Note that we just call np.log, without a literal assignment to output np.log(summary.z, out=output, where=summary.z \u003e 0) \u003e\u003e\u003e output \u003e\u003e\u003e array([3.49650756, 3.09104245, 3.78418963, 0. , 2.39789527, 0. ]) ",
-  "wordCount" : "251",
+  "articleBody": "When attempting to log-transform an array of values with NumPy, keep in mind\nGiven negative numbers and zeroes, NumPy will output NaN and -inf, respectively, along with a RuntimeWarning. Such values can cause downstream processing to fail or behave unexpectedly. numpy.log provides an argument to handle this situation How that argument affects numpy.log’s behavior depends on whether the output goes to a preexisting container or if that container is created on the fly. Consider this example, in which subject_data is a pandas DataFrame (hence, the chaining):\ntransforms = (np.log10(subject_data, where=column_name \u003e 0) .replace([np.inf, -np.inf], np.nan) .dropna() ) The where=column_name \u003e 0 argument will cause the logarithmic transformation to ignore rows where that column value is not greater than zero and instead place the original value. Any condition that evaluates to true or false can be used.\nIf observations did not exist prior, meaning it was uninitialized, locations of subject_data where the condition is False will result in observations remaining uninitialized in the corresponding positions. If you try this out, you will see NaN or maybe something like 6.952161e-310.\nIt may be better to initialize the output container, with zeroes, NaN, or whatever facilitates downstream use.\nLet’s say we have 6 values to transform, of which one is a zero and another is negative\nsummary = pd.DataFrame({'cat': ['a', 'a', 'b', 'c', 'c', 'c'], 'z': [33, 22, 44, 0, 11, -8]}) transforms = np.zeros(6) Note that we now call np.log without a literal assignment to transforms and instead assign transforms to the argument out:\nnp.log(summary.z, out=transforms, where=summary.z \u003e 0) \u003e\u003e\u003e transforms \u003e\u003e\u003e array([3.49650756, 3.09104245, 3.78418963, 0. , 2.39789527, 0. ]) ",
+  "wordCount" : "268",
   "inLanguage": "en",
   "datePublished": "2023-01-05T05:15:02-05:00",
   "dateModified": "2023-01-05T05:15:02-05:00",
@@ -197,25 +198,26 @@ Given negative numbers and zeroes, NumPy will output NaN and -inf, respectively,
 <li><code>numpy.log</code> provides an argument to handle this situation</li>
 <li>How that argument affects <code>numpy.log</code>&rsquo;s behavior depends on whether the output goes to a preexisting container or if that container is created on the fly.</li>
 </ul>
-<p>Consider this example:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>observations <span style="color:#f92672">=</span> (np<span style="color:#f92672">.</span>log10(subject_data, where<span style="color:#f92672">=</span>column_name <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>)
-</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">.</span>replace([np<span style="color:#f92672">.</span>inf, <span style="color:#f92672">-</span>np<span style="color:#f92672">.</span>inf], np<span style="color:#f92672">.</span>nan)
-</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">.</span>dropna()
-</span></span><span style="display:flex;"><span>                )
+<p>Consider this example, in which <code>subject_data</code> is a pandas DataFrame (hence,
+the chaining):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>transforms <span style="color:#f92672">=</span> (np<span style="color:#f92672">.</span>log10(subject_data, where<span style="color:#f92672">=</span>column_name <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">.</span>replace([np<span style="color:#f92672">.</span>inf, <span style="color:#f92672">-</span>np<span style="color:#f92672">.</span>inf], np<span style="color:#f92672">.</span>nan)
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">.</span>dropna()
+</span></span><span style="display:flex;"><span>             )
 </span></span></code></pre></div><p>The <code>where=column_name &gt; 0</code> argument will cause the logarithmic transformation to ignore rows where that column value is not greater than zero and instead place the original value.  Any condition that evaluates to <code>true</code> or <code>false</code> can be used.</p>
 <p>If <code>observations</code> did not exist prior, meaning it was <em>uninitialized</em>, locations of <code>subject_data</code> where the condition is <code>False</code> will result in <code>observations</code> remaining uninitialized in the corresponding positions.  If you try this out, you will see <code>NaN</code> or maybe something like <code>6.952161e-310</code>.</p>
 <p>It may be better to <em>initialize</em> the output container, with zeroes, <code>NaN</code>, or whatever facilitates downstream use.</p>
 <p>Let&rsquo;s say we have 6 values to transform, of which one is a zero and another is negative</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>summary <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame({<span style="color:#e6db74">&#39;cat&#39;</span>: [<span style="color:#e6db74">&#39;a&#39;</span>, <span style="color:#e6db74">&#39;a&#39;</span>, <span style="color:#e6db74">&#39;b&#39;</span>, <span style="color:#e6db74">&#39;c&#39;</span>, <span style="color:#e6db74">&#39;c&#39;</span>, <span style="color:#e6db74">&#39;c&#39;</span>], <span style="color:#e6db74">&#39;z&#39;</span>: [<span style="color:#ae81ff">33</span>, <span style="color:#ae81ff">22</span>, <span style="color:#ae81ff">44</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">11</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">8</span>]})
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>output <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>zeros(<span style="color:#ae81ff">6</span>)
+</span></span><span style="display:flex;"><span>transforms <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>zeros(<span style="color:#ae81ff">6</span>)
+</span></span></code></pre></div><p>Note that we now call np.log without a literal assignment to <code>transforms</code> and
+instead assign <code>transforms</code> to the argument <code>out</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>np<span style="color:#f92672">.</span>log(summary<span style="color:#f92672">.</span>z, out<span style="color:#f92672">=</span>transforms, where<span style="color:#f92672">=</span>summary<span style="color:#f92672">.</span>z <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># Note that we just call np.log, without a literal assignment to output</span>
-</span></span><span style="display:flex;"><span>np<span style="color:#f92672">.</span>log(summary<span style="color:#f92672">.</span>z, out<span style="color:#f92672">=</span>output, where<span style="color:#f92672">=</span>summary<span style="color:#f92672">.</span>z <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> output
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> transforms
 </span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> array([<span style="color:#ae81ff">3.49650756</span>, <span style="color:#ae81ff">3.09104245</span>, <span style="color:#ae81ff">3.78418963</span>, <span style="color:#ae81ff">0.</span>        , <span style="color:#ae81ff">2.39789527</span>,
-</span></span><span style="display:flex;"><span>       <span style="color:#ae81ff">0.</span>        ])
+</span></span><span style="display:flex;"><span>           <span style="color:#ae81ff">0.</span>        ])
 </span></span></code></pre></div>
 
   </div>

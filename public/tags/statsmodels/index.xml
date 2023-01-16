@@ -8,14 +8,14 @@
     <language>en-us</language>
     <lastBuildDate>Sun, 08 Jan 2023 15:18:18 -0500</lastBuildDate><atom:link href="https://drwaterx.github.io/til/tags/statsmodels/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Linear regression of time series</title>
+      <title>Explainable insights from linear regression of time series</title>
       <link>https://drwaterx.github.io/til/posts/practical_primer_ts/</link>
       <pubDate>Sun, 08 Jan 2023 15:18:18 -0500</pubDate>
       
       <guid>https://drwaterx.github.io/til/posts/practical_primer_ts/</guid>
       <description>This post is under construction, with missing graphs and unbaked LaTax math.
-Time series regression The following text covers mostly in-sample deconstruction of temporally sensitive effects that can be applied to other problems, including forecasting.
-We denote a time series context with some additional subscripts: $$y_t = \alpha + \sum_{i=1}^m \beta_i x_{i,t} + \epsilon_t$$ The properties of variables that constitute $x$ determine what kind of time series regression we perform.</description>
+It&amp;rsquo;s a cliche that linear models are &amp;ldquo;explainable.&amp;rdquo; And yet, when we attempt to produce insights that are salient to business, and produce them from the kind of data representing, let&amp;rsquo;s say, tens of thousands of cases, you will quickly find characteristics of the data that appreciably erode the veracity and salience of supposed insights.
+This is especially the case when applying canned routines in general, and I&amp;rsquo;ve found, time series &amp;lsquo;forecasting&amp;rsquo; packages in particular.</description>
     </item>
     
   </channel>

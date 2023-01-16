@@ -55,7 +55,8 @@
         }
 
     </style>
-</noscript><meta property="og:title" content="data management" />
+</noscript>
+<meta property="og:title" content="data management" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://drwaterx.github.io/til/tags/data-management/" />
@@ -128,16 +129,16 @@
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
-    <h2>Adventures in aggregation: Part 2
+    <h2>Aggregation: Implications of indexing
     </h2>
   </header>
   <div class="entry-content">
-    <p>Applying a function to a groupby object: Index implications While there are multiple syntaxes and methods to produce the same aggregated data, those variations produce different indices. The format and contents of the index can impact other processes, such as serialization and deserialization.
+    <p>While there are multiple syntaxes and methods to produce the same aggregated data, those variations produce different indices. The format and contents of the index can impact other processes, such as serialization and deserialization.
 Consider the following artificial transactional data.
-txns = pd.concat([pd.DataFrame({&#39;dt&#39;: pd.date_range(&#34;2022&#34;, freq=&#34;D&#34;, periods=10), &#39;amount&#39;: np.random.random(10), &#39;segment&#39;: [&#39;ex&#39;] * 10})] * 10, axis=0) dt amount segment (Timestamp(‘2022-01-01 00:00:00’), 0) 2022-01-01 00:00:00 0....</p>
+txns = pd.concat([pd.DataFrame({&#39;dt&#39;: pd.date_range(&#34;2022&#34;, freq=&#34;D&#34;, periods=10), &#39;amount&#39;: np.random.random(10), &#39;segment&#39;: [&#39;ex&#39;] * 10})] * 10, axis=0) dt amount segment (Timestamp(‘2022-01-01 00:00:00’), 0) 2022-01-01 00:00:00 0.992821 ex (Timestamp(‘2022-01-01 00:00:00’), 0) 2022-01-01 00:00:00 0....</p>
   </div>
   <footer class="entry-footer"><span title='2022-07-22 14:34:27 -0500 -0500'>July 22, 2022</span>&nbsp;·&nbsp;Aaron Slowey</footer>
-  <a class="entry-link" aria-label="post link to Adventures in aggregation: Part 2" href="https://drwaterx.github.io/til/posts/gbadventures02/"></a>
+  <a class="entry-link" aria-label="post link to Aggregation: Implications of indexing" href="https://drwaterx.github.io/til/posts/gbadventures02/"></a>
 </article>
     </main>
     

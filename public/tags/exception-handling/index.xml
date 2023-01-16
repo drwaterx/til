@@ -8,14 +8,13 @@
     <language>en-us</language>
     <lastBuildDate>Tue, 15 Nov 2022 11:21:31 -0500</lastBuildDate><atom:link href="https://drwaterx.github.io/til/tags/exception-handling/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>When slicing goes awry</title>
+      <title>Slice well</title>
       <link>https://drwaterx.github.io/til/posts/slices_awry/</link>
       <pubDate>Tue, 15 Nov 2022 11:21:31 -0500</pubDate>
       
       <guid>https://drwaterx.github.io/til/posts/slices_awry/</guid>
-      <description>Slicing In this post, I briefly review a few methods to select rows and/or columns of a DataFrame that satisfy one or more criteria. I then introduce an additional requirement that arises frequently in practice, that being slicing with previously unknown criteria.
-Levering multiIndexes I often find pandas&amp;rsquo; multiIndex to be more helpful than its rare use among colleagues would suggest.
-Pandas&amp;rsquo; .xs method is a clean way to select instances, as it can be executed in a piecewise sequence of criteria.</description>
+      <description>In this post, I briefly review a few methods to select rows and/or columns of a DataFrame that satisfy one or more criteria. I then introduce two additional requirements that arises frequently in practice&amp;ndash;slicing with previously unknown criteria and managing serialization and deserialization to recover the desired data structure.
+Lever multiIndexes I often find pandas&amp;rsquo; multiIndex to be helpful, although I do not observe it used very often. With a multi-indexed DataFrame, pandas&amp;rsquo; .</description>
     </item>
     
   </channel>

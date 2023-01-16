@@ -1,5 +1,5 @@
 ---
-title: "When slicing goes awry"
+title: "Slice well"
 date: 2022-11-15T11:21:31-05:00
 draft: false
 author: "Aaron Slowey"
@@ -7,20 +7,19 @@ tags: ["pandas", "exception handling"]
 categories: ["technical"]
 ---
 
-# Slicing
-
 In this post, I briefly review a few methods to select rows and/or columns of a
-DataFrame that satisfy one or more criteria. I then introduce an additional
-requirement that arises frequently in practice, that being slicing with
-previously unknown criteria.
+DataFrame that satisfy one or more criteria. I then introduce two additional
+requirements that arises frequently in practice--slicing with
+previously unknown criteria and managing serialization and deserialization 
+to recover the desired data structure.
 
-## Levering multiIndexes
+## Lever multiIndexes
 
-I often find pandas' multiIndex to be more helpful than its rare use among
-colleagues would suggest.
-
-Pandas' `.xs` method is a clean way to select instances, as it can be executed
-in a piecewise sequence of criteria. A downside is loss of multiIndex levels.
+I often find pandas' multiIndex to be helpful, although I do not observe it 
+used very often. With a multi-indexed DataFrame, pandas' `.xs` method is a 
+clean way to select instances, as it can be executed
+in a piecewise sequence of criteria. A downside is that you lose the 
+multiIndex level(s) from your table.
 
 When you have a multi-indexed dataframe, we can use `.loc` at varying depth. In
 general, `.loc` expects a row indexer followed by a column indexer. To select
@@ -31,10 +30,9 @@ want to tabulate:
 df.loc[['NA', 'EMEA', 'LA'], ['post_dt', 'swift_msg']]
 ```
 
-Note that the row indexer in this example is _one_ list; this will look into
-level 0 of the multiIndex.
-
-To further utilize the multiIndex, provide multiple lists of labels, bounded
+Note that the row indexer in this example is _one_ list, as is that of the 
+column indexer; this will look into level 0 of the multiIndex. To further 
+utilize the multiIndex, provide multiple lists of labels, bounded
 as __one__ indexer by a _tuple_:
 
 ```python
@@ -50,7 +48,8 @@ df.loc[pd.IndexSlice[:, ['Mining', 'Retail']], ['post_dt', 'swift_msg']]
 `:` is interpreted as "include every label in this level," which in this example
 implies "all geographies."
 
-Note that all of the above substitute for boolean masks like `df[df['A']==0]`.
+Note that all of the above are more organized and readable version of 
+applying a boolean mask like `df[(df['A']==0) & (df['B']==1)]`.
 
 ## When slicing goes awry
 
@@ -58,13 +57,15 @@ Often, we try to progammatically select a (sub)category of something from a data
 set containing multiple groups. With commercial payments, the entire data set
 may contain multiple bank clients _and_ payment channels (paper check, ACH,
 wires, etc.), but not every client may have made payments through all channels.
-We don't know this in advance and the program attempts thousands of slices.
+We do not know this in advance and yet ask the program to slice thousands of 
+samples.
 
-Pandas' `.xs()` method will sample (slice) a dataframe on the basis of a value
-of one column, index, level of an index, multiple values in a multiIndex (using
-the `IndexSlicer`). If a value is absent, a `KeyError` is produced:
+Pandas' `.xs()` method will slice a dataframe on the basis of one level 
+of an index. If the value we specify is absent, a `KeyError` is produced:
 
 ```python
+import pandas as pd
+
 df = pd.DataFrame({'c': ['x', 'x', 'y'], 'b': [1, 2, 3]}).set_index('c')
 df.xs('z')
 
@@ -98,10 +99,7 @@ except KeyError as error:
     print(error.__traceback__)
 
 >> > 'z'
-< traceback
-object
-at
-0x7fea784e9308 >
+< traceback object at 0x7fea784e9308 >
 ```
 
 `'z'` is the `__context__` and `__cause__`.
@@ -123,16 +121,17 @@ def slice_it(data, rail):
 
 df = pd.DataFrame({'rails': ['x', 'x', 'y', 'q'],
                    'b': [1, 2, 3, 9]}).set_index('rails')
-rails = ['x', 'y', 'abc', 'q']
+channels = ['x', 'y', 'abc', 'q']
 
-for rail in rails:
-    slice = slice_it(df, rail)
+for channel in channels:
+    slice = slice_it(df, channel)
     if slice.empty:
         continue
 ```
 
-The 3rd rail `z` is not in the data; the error will be printed and the code will
-attempt to sample the next rail (per the `continue` command). Any follow-on
+The 3rd channel `z` is not in the data; the error will be printed and the code 
+will
+attempt to sample the next rail, per the `continue` command. Any follow-on
 operations will __only__ occur upon successful completion of the slice. Note
 that you cannot return `None` and apply a pandas method to check if the slice
 worked. Instead, we chose to return an _empty_ DataFrame and check it with
@@ -141,5 +140,5 @@ the `.empty` attribute.
 If empty, we could log that the data were unavailable for that particular
 subject. Error and exception handling intertwines with how you design the
 scope of functions.  The ease of deciding where to handle exceptions 
-(in the processing function itself or a driver function) is a strong 
-indication of how well you have designed your functions' scope.
+(in the processing function itself or a driver function) indicates how 
+well you designed your function's scope.
