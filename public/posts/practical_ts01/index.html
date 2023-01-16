@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Explainable insights from sequence regression | Aaron&#39;s D4ta blog</title>
+<meta name="keywords" content="modeling, statsmodels">
+<meta name="description" content="Note: Charts are under construction.
+Business considerations Linear models are among the most explainable, and yet producing insights salient to business problems is not trivial. Adopt a simple formulation, and a direct interpretation of parameters will require multiple footnotes to bridge the gap between what is meaningful on the terms of learned associations and what can confirm or alter a manager&rsquo;s point of view and strategy. Adopt a more complex formulation and, well, you must have amazing infrastructure.">
+<meta name="author" content="Aaron Slowey">
+<link rel="canonical" href="https://drwaterx.github.io/til/posts/practical_ts01/">
+<link crossorigin="anonymous" href="/til/assets/css/stylesheet.bccfefac377bc340f06c260aed1bddf49a4354816d7c570d6aac75a997986c95.css" integrity="sha256-vM/vrDd7w0DwbCYK7Rvd9JpDVIFtfFcNaqx1qZeYbJU=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/til/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://drwaterx.github.io/til/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://drwaterx.github.io/til/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://drwaterx.github.io/til/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://drwaterx.github.io/til/apple-touch-icon.png">
+<link rel="mask-icon" href="https://drwaterx.github.io/til/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+      integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0"
+      crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+        integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4"
+        crossorigin="anonymous"></script>
+<script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+        integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05"
+        crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        renderMathInElement(document.body, {
+            
+            
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true}
+            ],
+            
+            throwOnError: false
+        });
+    });
+</script>
+
+<meta property="og:title" content="Explainable insights from sequence regression" />
+<meta property="og:description" content="Note: Charts are under construction.
+Business considerations Linear models are among the most explainable, and yet producing insights salient to business problems is not trivial. Adopt a simple formulation, and a direct interpretation of parameters will require multiple footnotes to bridge the gap between what is meaningful on the terms of learned associations and what can confirm or alter a manager&rsquo;s point of view and strategy. Adopt a more complex formulation and, well, you must have amazing infrastructure." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://drwaterx.github.io/til/posts/practical_ts01/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-01-08T15:18:18-05:00" />
+<meta property="article:modified_time" content="2023-01-08T15:18:18-05:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Explainable insights from sequence regression"/>
+<meta name="twitter:description" content="Note: Charts are under construction.
+Business considerations Linear models are among the most explainable, and yet producing insights salient to business problems is not trivial. Adopt a simple formulation, and a direct interpretation of parameters will require multiple footnotes to bridge the gap between what is meaningful on the terms of learned associations and what can confirm or alter a manager&rsquo;s point of view and strategy. Adopt a more complex formulation and, well, you must have amazing infrastructure."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://drwaterx.github.io/til/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Explainable insights from sequence regression",
+      "item": "https://drwaterx.github.io/til/posts/practical_ts01/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Explainable insights from sequence regression",
+  "name": "Explainable insights from sequence regression",
+  "description": "Note: Charts are under construction.\nBusiness considerations Linear models are among the most explainable, and yet producing insights salient to business problems is not trivial. Adopt a simple formulation, and a direct interpretation of parameters will require multiple footnotes to bridge the gap between what is meaningful on the terms of learned associations and what can confirm or alter a manager\u0026rsquo;s point of view and strategy. Adopt a more complex formulation and, well, you must have amazing infrastructure.",
+  "keywords": [
+    "modeling", "statsmodels"
+  ],
+  "articleBody": "Note: Charts are under construction.\nBusiness considerations Linear models are among the most explainable, and yet producing insights salient to business problems is not trivial. Adopt a simple formulation, and a direct interpretation of parameters will require multiple footnotes to bridge the gap between what is meaningful on the terms of learned associations and what can confirm or alter a manager’s point of view and strategy. Adopt a more complex formulation and, well, you must have amazing infrastructure.\nOne reality that makes the gap so wide is that to discern any pattern, data sets need to be subdivided into coherent segments. A linear model can do so through indicator variables, but practically speaking it can be necessary or even legally required to separate data into tens of thousands of segments. A model will be learned for each segment, and each will require some level of validation.\nOnce validated, an interesting problem is how to build downstream analytics that consume the model output (predictions, parameters, performance metrics, etc.) and inform managers. The granularity of their decisions is key to designing those analytics, which should refine the models’ design.\nIn this context, I address a detail that can appreciably erode the veracity and salience of model-derived insights. This erosion is a risk when applying canned routines in general, and time series/forecasting packages in particular. They abstract away important details, most notably\nhow data are prepared for modeling. As a result, such packages lead users to implicitly, rather than explicitly, choose parameters that are incongruent with, for example, the temporal structure of the time series. I have not researched it closely, but I fail to see how recent meta-learners that deploy dozens of forecasting algorithms solve this congruence issue, unless they adequately prepare data as well.\nPackages like statsmodels.tsa are workhorses, but do not check, for instance, whether a daily time series contains only business days, while the user has specified a ‘seasonality’ period of 7. When I started using it, I was unsure if it did or not, and so I created artificial data with known infidelities and effects, observed how statsmodels responded, and what distortions ensued. This post is a recounting of some of those experiments.\nThe following covers in-sample deconstruction of temporally sensitive effects that can be applied to a variety of problems, including forecasting. The objectives include predicting the future and understanding temporal patterns, for a variety of reasons including explaining models to non-technical managers and assessing the tradeoff between model capacity, maintenance costs, failure risk, and other things that ultimately determine adoption and the delivery of value to an enterprise.\nSetting We denote a sequence (e.g., time series) model by adding additional subscripts to a multivariate linear regression: $$y_t = \\alpha + \\sum_{i=1}^m \\beta_i x_{i,t} + \\epsilon_t$$ The properties of variables that constitute $x$ determine what kind of time series regression we perform.\nAn auto-regression model includes up to $p$ lags: $x_{t-p}, \\ldots, x_{t-1}$ A linear trend is included by $x_{1, t} = t$; assuming equally spaced observations, $t$ would be equivalent to numpy.linspace(1, T) Day of week is achieved by having one binary variable for all but one day; i.e., $x_{i, t}=1$ if the observation occurs on a particular day and zero otherwise. For any categorical variable having $k$ unique values, include $k-1$ binary variables into the model. So if we leave out Sunday, $x_{Monday, t}$ measures the effect of Monday on $y$ compared to the effect of Sunday. Spike: A dummy variable that is 1 in a specific period, zero before and after Step: A dummy variable that is zero up to a point, 1 from that point on. Similar for a change in slope. As with its OLS class, you can apply statsmodels’ .summary() method to the fitted tsa model object, as well as .plot_predict(start=t0, end=t1).\nThe ’errors’ should\nBe normally distributed with mean zero and a constant variance Not be auto-, or serially, correlated; checks include the Breusch-Godfrey or Lagrange Multiplier test, in which a small p-value indicates significant autocorrelation remains. Unrelated to the predictors Apply .plot_diagnostics() to the fitted model object to obtain\nsome of these diagnostics.\nstatsmodels.tsa has multiple methods for time series analysis. We do not have to use .tsa methods to model sequence data; multivariate linear regression with univariate lags and time characteristic variables could achieve roughly the same model. A variety of considerations may determine the choice of model class, such as being able to say you used a certain package.\nIn any case, we are tackling the challenge of building a linear model with familiar performance criteria. The most profound difference is that the observations are possibly auto-correlated, not I.I.D., but this may ’normalize’ out by including lags and time characteristics (seasonal components).\nAlternatively, we may model the (fractional) differences between observations.\nSome problems may call for harnessing the ‘memory’ of a time series, rather than erasing it for the sake of stationarity.\nA good starting point is the AutoReg class of statsmodels.tsa.ar_model.\nfrom statsmodels.tsa.api import acf, graphics, pacf from statsmodels.tsa.ar_model import AutoReg auto_reg = AutoReg(data, lags=3, seasonal=True, period=7, ) auto_reg0 = auto_reg.fit() [A worked example](https://www.statsmodels. org/dev/examples/notebooks/generated/autoregressions.html?highlight=ar_select_order) in the statsmodels documentation does not show how each component manifests and how parameters affect the fit. That ambiguity ends here.\nTo what extent do statsmodels implementations include utilities that recognize and utilize datetimes? The work presented here suggests not at all, despite warnings when seasonal=True but period is unspecified. To obtain expected behavior from statistical learning algorithms, it is crucial to know and potentially modify the sequential structure (spacing) of data, because there do not appear to be intelligent checks and automated cleaning processes. Other key questions include\nConsider a period $m=52$ weeks per year; unless tsa interprets datetime values intelligently, setting period=52 should only imply a weekly periodicity (seasonality) if there are $7\\cdot52$ rows of data. If we have $T=1.5$ years of data, would we not have to pre-specify the period as $m=p\\cdot\\frac{52}{q} \\cdot T$, where p and q define the period of interest? What if there are a few days missing, seemingly randomly? …or even not randomly? For example, the data lack Saturdays, Sundays, and/or holidays. Does the data need to be processed to ensure there are 7 days per week, 52 weeks per year, imputing zeroes where needed? To begin to shed light on these questions, create artificial data with known patterns. Create one year of daily timestamps and initialize the observations with random numbers $\\in (0, 1)$. For other possibilities, see also sklego.datasets.make_simpleseries.\ndays = numpy.arange('2022-01-01', '2023-01-01', dtype='datetime64[D]') print( f'There are {len(days)} days in the year 2022 (start {days.min()}; end {days.max()}).') ts = pd.DataFrame({'t': days, # numpy.linspace(1, 100, 100) 'y': numpy.random.random(len(days))} ) ![[professional/know_how/stat_modeling/attachments/visualization.png]]\nEncode a time characteristic, such as day of the week (dow) and boost the signal on certain days (or weeks, etc.). Here, we spike the signal on Fridays and experiment with the seasonal and period parameters. The charts are produced by Altair.\nts.loc[:, 'dow'] = ts.t.dt.weekday ts.y = ts.y + numpy.where(ts.dow == 4, 2, 0) auto_reg = AutoReg(ts.y, lags=4, trend='t', seasonal=False, period=7, ) auto_reg0 = auto_reg.fit() ts.loc[:, 'y_hat'] = auto_reg0.predict() With seasonal=False, we obtain an upwardly trending oscillation: ![[professional/know_how/stat_modeling/attachments/visualization (1).png]]\nEnable seasonal, and we get the expected level baseline with weekly peaks: Exhibit A ![[professional/know_how/stat_modeling/attachments/visualization (2).png]]\nIf we set period=365, we get a ValueError: The model specification cannot be estimated. The model contains 370 regressors (1 trend, 365 seasonal, 4 lags) but after adjustment for hold_back and creation of the lags, there are only 361 data points available to estimate parameters.\nAnd if we set to a feasible, but wrong value – period=30 – we will get a somewhat better result than without any periodicity, but clearly missing the effect: ![[professional/know_how/stat_modeling/attachments/visualization (4).png]]\nInterestingly, if we increase lags=7 to include the weekly effect, we get almost as good a model as with seasonal terms:\nauto_reg = AutoReg(ts.y, lags=7, trend='t', seasonal=False, period=7) ![[professional/know_how/stat_modeling/attachments/visualization (5).png]]\nAny number of lags above seven, and we see no improvement. Although not shown, the model with lags=7 and seasonal=True with period=7 looks identical to the seasonal=True, period=7 model with lags=4 above, suggesting that the $x_{t-p}$ and $s_d$ terms are collinear.\nstatsmodels.tsa.ar_model.AutoReg interprets period=7 as the longest step from one data point to the next in the DataFrame; shorter steps from 1 to $p-1$ are also included. We think that something happens every 7th observation in the sequence, and AutoReg checks whether anything happens on shorter cadences. As discussed in detail below, whether those steps correspond to a meaningful time interval or period depends on the structure of the sequence.\nLook at the coefficients by applying the .params method to the fitted model object; e.g., with lags=2, seasonal=True, and period=7: ![[Pasted image 20221003171824.png]]\nNote that with period and lags set to an integer, multiple terms are included up to that value: e.g., $[1, \\text{lags}]$. Unlike period, you may provide a list of integers for lags, in which case only those lags are included. As expected, we find the seasonal.6 coefficient to be higher than those of narrower periodicities. It’s also no accident that seasonal components 0-5’s coefficients are similar to each other. We will investigate how this model responds to data with multiple periodicities.\nContinuing on with sanity checks, no matter the length of the sequence, as long as there are more data points than lags (and other parameters), the model will fit properly. Here, we have data over a three-month period. ![[visualization (6).png]]\nstatsmodels.tsa does not require the time or sequence index to be of a datetime dtype. Replacing datetimes by integers, we obtain the same result (not shown). But note that AutoReg is not being explicitly given a sequence or time variable; it is implicit in the pandas.Series index of ts.y , so the algorithm is unaware of the change in the time column ts.t . If we remove a small number of points at random such that there are gaps in the index, the model falls apart (not shown). Can we make the seasonal regression algorithm aware that observations are made on calendar days?\npoints = 5 idx_mask = numpy.random.randint(0, len(ts), points) ts = ts[~ts.index.isin(idx_mask)] Incidentally, avoid df.sample(frac=0.9), as it shuffles the rows.\nSetting the index with the datetime-formatted values (maintaining the five randomly placed gaps) leads to ValueWarning: A date index has been provided, but it has no associated frequency information and so will be ignored when e.g. forecasting. The predictions from .predict() are all null.\nWhat matters is a logical correspondence between period and the frequency of the data as presented by their sequence in the array or DataFrame. Let’s say period=7; if the frequency is unspecified, the algorithm considers if a data point six steps from the current point tends to be higher, lower, or about the same as the current point. If the data happen to be observations recorded every nanosecond with a perturbation every 13 ns, period=13 should fit that sequence nicely. This naive behavior is helpful for modeling observations that occur with a regularity that is meaningful, if not in a temporal way. For example, every fourth trip to buy groceries, the family goes to Costco, not Trader Joe’s. But it poses a problem for incomplete and irregular sequences when effects pertain to certain fixed time qualities.\nWhen .set_index('dt_col') involves a datetime column, we obtain a DateTimeIndex with freq=None, which statsmodels.tsa.ar_model complains about. We can specify the frequency\nts = ts.set_index('t').asfreq('d') Having reproduced the result shown in Exhibit A with a complete data set indexed in this way, we return to the case where points are randomly missing; remove them prior to setting the datetime index and frequency. Here, we introduce a potential problem. As an aside, .asfreq('B') sets an index to daily business day. .asfreq can be applied to a DataFrame; it will return the DataFrame “reindexed to the specified frequency.” Meaning the “original data conformed to a new index with the specified frequency.” In this case, to conform to daily frequency, rows of nan are placed where time points were missing. Before and after applying .asfreq('d'): ![[Pasted image 20221004101943.png]] ![[Pasted image 20221004102013.png]]\nAutoReg will raise a MissingDataError: exog contains inf or nans, resolvable by including missing='drop'. And yet even though we have a DatetimeIndex with freq='D', we still get a ValueWarning: A date index has been provided, but it has no associated frequency information . Instead of a DatetimeIndex with .asfreq('d'), we can try a PeriodIndex, a subclass of Index that is regularly spaced:\nts.set_index('t', inumpylace=True) ts.index = pd.DatetimeIndex(ts.index).to_period('D') PeriodIndex(['2022-01-01', '2022-01-02', '2022-01-03', '2022-01-04', '2022-01-05', '2022-01-06', '2022-01-07', '2022-01-08', '2022-01-09', '2022-01-10', ... '2022-12-22', '2022-12-23', '2022-12-24', '2022-12-25', '2022-12-26', '2022-12-27', '2022-12-28', '2022-12-29', '2022-12-30', '2022-12-31'], dtype='period[D]', name='t', length=360, freq='D') We still have gaps in the time series, but no nan have been inserted: ![[Pasted image 20221004104608.png]]\nIt is unnecessary to include missing='drop' in AutoReg(), since the data has no missing values (it is good practice to include missing='raise' as a check). .fit() runs and .predict() returns values without altering the input data structure: it still has a PeriodIndex: ![[Pasted image 20221004105317.png]]\nDid the model fit well? While the PeriodIndex facilitated the fit, it complicates plotting with Altair. Assuming the index needs to be reset into a column, a PeriodIndex resets to a column of 'period[D]' dtype, which causes a TypeError. After fitting the model with PeriodIndex-ed data, reformat the index:\nts.index = ts.index.to_timestamp() You will lose the freq and have a DatetimeIndex once again. Then reset that index and plot as usual. ![[professional/know_how/stat_modeling/attachments/visualization (2) 1.png]] ![[Pasted image 20221004121816.png]] Our model did not capture the Friday signal as before, presumably because it naively assumed every $7\\cdot n^{th}$ point was Friday, ignoring the days skipped in the index. Note how the parameters’ seasonal components are written as s(1, 7), whereas before it was seasonal.0. The connotation is that we’re capturing effects that occur every 1st of 7 days.\nWe’ve tried two ways to structure our data such that statsmodels.tsa is aware of timing. But this data transformation did not apparently raise such awareness, as the model failed to fit the elevated values on Fridays. It could not even use the DateTimeIndex with a daily frequency. All of these observations suggest that what ultimately matters to statsmodels.tsa is the numerical index of the table; row 6 means Friday, whether the Tuesday before is missing or not (in which case Friday is actually in row 5). To the machine, they are all just row indices, not days.\nNotice how the model suggests a stronger signal around day 7, adjoined by expectation of signal quite a bit before; the behavior is smeared or muddled. Absence of even a handful of time points throws off the periodicity of this time series.\nThis is a practical problem, as there are bound to be missing time points, either random or systematic (e.g., transactions on business days only). A path forward would be to have all dates present and put zeroes where no transactions occurred (does a package like tbats do this?). For some systematic effects like weekend dormancy, the model should fit coefficients on those days accordingly; i.e., $\\beta_{s(5)}$ and $\\beta_{s(6)}$ should be close to zero. Holidays are another systematic effect we would need an exogenous binary variable to capture to avoid errors in seasonal effect estimates. Lastly, randomly occurring times without transactions will rationally be factored in by $\\beta_{s(t)}$ to the extent they occur.\nUsing .asfreq to conform a daily time series of 365 points minus 10 removed at random to a DatetimeIndex-ed dataframe with freq='D', we get a good fit.\nts = ts.asfreq('d') ts.fillna(0, inplace=True) auto_reg = AutoReg(ts.y, missing='raise', lags=2, trend='t', seasonal=True, period=7, old_names=False, ) auto_reg0 = auto_reg.fit() ts.loc[:, 'y_hat'] = auto_reg0.predict() ![[Pasted image 20221004163931.png]]\nThe coefficient 2.37 is lower than 2.55 for the fit of the complete dataset, which suggests that some Fridays may have been zeroed out by the data preparation. But as long as such a random effect is not too prevalent, the autoregression should provide reasonable results. Here the incidence of missing days is about 3%.\nAnother method may allow discrete seasonality, rather than the inclusive/cumulative sort employed by AutoReg. The choice involves whether to use autoregression plus seasonality versus engineered features in a multivariate regression.\nFor example, no matter how many time points are absent, if we encode Friday correctly, that feature will light up on this artificial data set, and so is a more reliable approach than an autoregressive seasonality model. Since it cannot include custom features, the AutoReg class is more suitable for EDA than deployment as an estimator or forecasting service.\nNo matter what method we choose, we need to verify, using synthetic data, that the choice and its parameters is congruent with the structure of our sequence data.\nWhat if the signal boost occurred every other Friday? s(7,7) = 1.5, while other seasonal variables are similar to before, although a bit elevated (0.51 to 0.56); what seems to have happened is a halving of the Friday effect. The model is unaware of what week each transaction occurred. ![[visualization (8).png]]\nIncreasing period to 15 leads to worse results, probably due to how larger interval effects do not consistently align to even or odd Fridays across months of the year. In sum, if we believe such specific periodic effects are there, or conversely want to probe for them, we should simply encode it as a binary variable consistent with how the data are prepared. The coefficients on those variables from the regression provide the evidence. From there, we can decide whether to remove extraneous variables, to improve our estimates of the remaining effects. To probe for surprises in production, we may deploy the more inclusive, though, problematic (collinearity, etc.) alongside the selected model.\n",
+  "wordCount" : "2929",
+  "inLanguage": "en",
+  "datePublished": "2023-01-08T15:18:18-05:00",
+  "dateModified": "2023-01-08T15:18:18-05:00",
+  "author":{
+    "@type": "Person",
+    "name": "Aaron Slowey"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://drwaterx.github.io/til/posts/practical_ts01/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Aaron's D4ta blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://drwaterx.github.io/til/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://drwaterx.github.io/til/" accesskey="h" title="Aaron&#39;s D4ta blog (Alt + H)">Aaron&#39;s D4ta blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://drwaterx.github.io/til/about/" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://drwaterx.github.io/til/tags" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      Explainable insights from sequence regression
+    </h1>
+    <div class="post-meta"><span title='2023-01-08 15:18:18 -0500 EST'>January 8, 2023</span>&nbsp;·&nbsp;Aaron Slowey
+
+</div>
+  </header> 
+  <div class="post-content"><p>Note: Charts are under construction.</p>
+<h1 id="business-considerations">Business considerations<a hidden class="anchor" aria-hidden="true" href="#business-considerations">#</a></h1>
+<p>Linear models are among the most explainable, and yet producing insights
+salient to business problems is not trivial.  Adopt a simple formulation,
+and a direct interpretation of parameters will require multiple footnotes to
+bridge the gap between what is meaningful on the terms of learned
+associations and what can confirm or alter a manager&rsquo;s point of view and
+strategy.  Adopt a more complex formulation and, well, you must have amazing
+infrastructure.</p>
+<p>One reality that makes the gap so wide is that to discern any pattern,
+data sets need to be subdivided into coherent segments.  A linear model
+can do so through indicator variables, but practically speaking it can
+be necessary or even legally required to separate data into tens of
+thousands of segments.  A model will be learned for each segment, and
+each will require some level of validation.</p>
+<p>Once validated, an interesting problem is how to build downstream analytics
+that consume the model output (predictions, parameters, performance metrics,
+etc.) and inform managers.  The granularity of their decisions is key to
+designing those analytics, which should refine the models&rsquo; design.</p>
+<p>In this context, I address a detail that can appreciably erode the
+veracity and salience of model-derived insights.  This erosion is a risk
+when applying canned routines in general, and time series/forecasting
+packages in particular.  They abstract away important details, most notably<br>
+how data are prepared for modeling.  As a result, such packages
+lead users to implicitly, rather than explicitly, choose parameters that are
+incongruent with, for example, the temporal structure of
+the time series.  I have not researched it closely, but I fail to see how
+recent meta-learners that deploy dozens of forecasting algorithms
+solve this congruence issue, unless they adequately prepare data as well.</p>
+<p>Packages like <code>statsmodels.tsa</code> are workhorses, but do not check, for
+instance, whether a daily time
+series contains only business days, while the user has specified a
+&lsquo;seasonality&rsquo; period of 7.  When I started using it, I was unsure if
+it did or not, and so I created artificial data with known
+infidelities and effects, observed how <code>statsmodels</code> responded, and what
+distortions ensued.  This post is a recounting of some of those experiments.</p>
+<p>The following covers <em>in-sample</em> deconstruction of temporally
+sensitive effects that can be applied to a variety of problems, including
+forecasting.  The objectives include predicting the future <em>and</em> understanding
+temporal patterns, for a variety of reasons including explaining models to
+non-technical managers and assessing the tradeoff between model capacity,
+maintenance costs, failure risk, and other things that ultimately determine
+adoption and the delivery of value to an enterprise.</p>
+<h1 id="setting">Setting<a hidden class="anchor" aria-hidden="true" href="#setting">#</a></h1>
+<p>We denote a sequence (e.g., time series) model by adding additional
+subscripts to a multivariate linear regression:
+$$y_t = \alpha + \sum_{i=1}^m \beta_i x_{i,t} + \epsilon_t$$
+The properties of variables that constitute $x$ determine what kind of time
+series regression we perform.</p>
+<ul>
+<li>An auto-regression model includes up to $p$ lags: $x_{t-p}, \ldots, x_{t-1}$</li>
+<li>A linear trend is included by $x_{1, t} = t$; assuming equally spaced
+observations, $t$ would be equivalent to <code>numpy.linspace(1, T)</code></li>
+<li>Day of week is achieved by having one binary variable for all but one day;
+i.e., $x_{i, t}=1$ if the observation occurs on a particular day and zero
+otherwise. For any categorical variable having $k$ unique values, include
+$k-1$ binary variables into the model. So if we leave out Sunday, $x_{Monday,
+t}$ measures the effect of Monday on $y$ <em>compared to the effect of Sunday</em>.</li>
+<li>Spike: A dummy variable that is 1 in a specific period, zero before and after</li>
+<li>Step: A dummy variable that is zero up to a point, 1 from that point on.
+Similar for a change in slope.</li>
+</ul>
+<p>As with its <code>OLS</code> class, you can apply statsmodels&rsquo; <code>.summary()</code> method to the
+fitted <code>tsa</code> model object, as well as <code>.plot_predict(start=t0, end=t1)</code>.</p>
+<p>The &rsquo;errors&rsquo; should</p>
+<ul>
+<li>Be normally distributed with mean zero and a constant variance</li>
+<li>Not be auto-, or serially, correlated; checks include the Breusch-Godfrey or
+Lagrange Multiplier test, in which a small <code>p-value</code> indicates significant
+autocorrelation remains.</li>
+<li>Unrelated to the predictors</li>
+</ul>
+<p>Apply <code>.plot_diagnostics()</code> to the fitted model object to obtain<br>
+some of these diagnostics.</p>
+<p><code>statsmodels.tsa</code> has multiple methods for time series
+analysis. We do not have to use <code>.tsa</code> methods to model
+sequence data; multivariate linear regression with univariate lags and time
+characteristic variables could achieve roughly the same model. A variety of
+considerations may determine the choice of model class, such as being
+able to say you used a certain package.</p>
+<p>In any case, we are tackling the challenge of building a linear model with
+familiar performance criteria. The most profound difference is that the
+observations are possibly auto-correlated, not I.I.D., but this may &rsquo;normalize&rsquo;
+out by including lags and time characteristics (seasonal components).<br>
+Alternatively, we may model the (fractional) differences between observations.<br>
+Some problems may call for harnessing the &lsquo;memory&rsquo; of a time series, rather
+than erasing it for the sake of stationarity.</p>
+<p>A good starting point is the <code>AutoReg</code> class of <code>statsmodels.tsa.ar_model</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> statsmodels.tsa.api <span style="color:#f92672">import</span> acf, graphics, pacf
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> statsmodels.tsa.ar_model <span style="color:#f92672">import</span> AutoReg
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>auto_reg <span style="color:#f92672">=</span> AutoReg(data,
+</span></span><span style="display:flex;"><span>                   lags<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>,
+</span></span><span style="display:flex;"><span>                   seasonal<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>,
+</span></span><span style="display:flex;"><span>                   period<span style="color:#f92672">=</span><span style="color:#ae81ff">7</span>,
+</span></span><span style="display:flex;"><span>                   )
+</span></span><span style="display:flex;"><span>auto_reg0 <span style="color:#f92672">=</span> auto_reg<span style="color:#f92672">.</span>fit()
+</span></span></code></pre></div><p>[A worked example](<a href="https://www.statsmodels">https://www.statsmodels</a>.
+org/dev/examples/notebooks/generated/autoregressions.html?highlight=ar_select_order)
+in the <code>statsmodels</code> documentation does not show how each component
+manifests and how parameters affect the fit. That ambiguity ends here.</p>
+<p>To what extent do <code>statsmodels</code> implementations
+include utilities that recognize and utilize <code>datetimes</code>? The work presented
+here suggests not at all, despite warnings when <code>seasonal=True</code>
+but <code>period</code> is unspecified. To obtain expected behavior from statistical
+learning algorithms, it is crucial to know and potentially modify the sequential
+structure (spacing) of data, because there do not appear to be intelligent
+checks and automated cleaning processes. Other key questions include</p>
+<ul>
+<li>Consider a period $m=52$ weeks per year; unless <code>tsa</code> interprets datetime
+values intelligently, setting <code>period=52</code> should only imply a weekly
+periodicity (seasonality) if there are $7\cdot52$ rows of data.</li>
+<li>If we have $T=1.5$ years of data, would we not have to pre-specify
+the period as $m=p\cdot\frac{52}{q} \cdot T$, where p and q define the
+period of interest?</li>
+<li>What if there are a few days missing, seemingly randomly?</li>
+<li>&hellip;or even not randomly?  For example, the data lack Saturdays,
+Sundays, and/or holidays.</li>
+<li>Does the data need to be processed to ensure there are 7 days per week, 52
+weeks per year, imputing zeroes where needed?</li>
+</ul>
+<p>To begin to shed light on these questions, create artificial data with known
+patterns. Create one year of daily
+timestamps and initialize the observations with random numbers $\in (0, 1)$. For
+other possibilities, see also <code>sklego.datasets.make_simpleseries</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>days <span style="color:#f92672">=</span> numpy<span style="color:#f92672">.</span>arange(<span style="color:#e6db74">&#39;2022-01-01&#39;</span>, <span style="color:#e6db74">&#39;2023-01-01&#39;</span>, dtype<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;datetime64[D]&#39;</span>)
+</span></span><span style="display:flex;"><span>print(
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;There are </span><span style="color:#e6db74">{</span>len(days)<span style="color:#e6db74">}</span><span style="color:#e6db74"> days in the year 2022 (start </span><span style="color:#e6db74">{</span>days<span style="color:#f92672">.</span>min()<span style="color:#e6db74">}</span><span style="color:#e6db74">; end </span><span style="color:#e6db74">{</span>days<span style="color:#f92672">.</span>max()<span style="color:#e6db74">}</span><span style="color:#e6db74">).&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ts <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame({<span style="color:#e6db74">&#39;t&#39;</span>: days,  <span style="color:#75715e"># numpy.linspace(1, 100, 100)</span>
+</span></span><span style="display:flex;"><span>                   <span style="color:#e6db74">&#39;y&#39;</span>: numpy<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>random(len(days))}
+</span></span><span style="display:flex;"><span>                  )
+</span></span></code></pre></div><p>![[professional/know_how/stat_modeling/attachments/visualization.png]]</p>
+<p>Encode a time characteristic, such as day of the week (dow) and boost the signal
+on certain days (or weeks, etc.). Here, we spike the signal on Fridays and
+experiment with the <code>seasonal</code> and <code>period</code> parameters.  The charts are
+produced by Altair.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>ts<span style="color:#f92672">.</span>loc[:, <span style="color:#e6db74">&#39;dow&#39;</span>] <span style="color:#f92672">=</span> ts<span style="color:#f92672">.</span>t<span style="color:#f92672">.</span>dt<span style="color:#f92672">.</span>weekday
+</span></span><span style="display:flex;"><span>ts<span style="color:#f92672">.</span>y <span style="color:#f92672">=</span> ts<span style="color:#f92672">.</span>y <span style="color:#f92672">+</span> numpy<span style="color:#f92672">.</span>where(ts<span style="color:#f92672">.</span>dow <span style="color:#f92672">==</span> <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>auto_reg <span style="color:#f92672">=</span> AutoReg(ts<span style="color:#f92672">.</span>y,
+</span></span><span style="display:flex;"><span>                   lags<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>,
+</span></span><span style="display:flex;"><span>                   trend<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;t&#39;</span>,
+</span></span><span style="display:flex;"><span>                   seasonal<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>,
+</span></span><span style="display:flex;"><span>                   period<span style="color:#f92672">=</span><span style="color:#ae81ff">7</span>,
+</span></span><span style="display:flex;"><span>                   )
+</span></span><span style="display:flex;"><span>auto_reg0 <span style="color:#f92672">=</span> auto_reg<span style="color:#f92672">.</span>fit()
+</span></span><span style="display:flex;"><span>ts<span style="color:#f92672">.</span>loc[:, <span style="color:#e6db74">&#39;y_hat&#39;</span>] <span style="color:#f92672">=</span> auto_reg0<span style="color:#f92672">.</span>predict()
+</span></span></code></pre></div><p>With <code>seasonal=False</code>, we obtain an upwardly trending oscillation:
+![[professional/know_how/stat_modeling/attachments/visualization (1).png]]</p>
+<p>Enable <code>seasonal</code>, and we get the expected level baseline with weekly peaks:
+<strong>Exhibit A</strong>
+![[professional/know_how/stat_modeling/attachments/visualization (2).png]]</p>
+<p>If we set <code>period=365</code>, we get
+a <code>ValueError: The model specification cannot be estimated. The model contains 370 regressors (1 trend, 365 seasonal, 4 lags) but after adjustment for hold_back and creation of the lags, there are only 361 data points available to estimate parameters.</code></p>
+<p>And if we set to a feasible, but wrong value &ndash; <code>period=30</code>  &ndash; we will get a
+somewhat better result than without any periodicity, but clearly missing the
+effect:
+![[professional/know_how/stat_modeling/attachments/visualization (4).png]]</p>
+<p>Interestingly, if we increase <code>lags=7</code> to include the weekly effect, we get
+almost as good a model as with seasonal terms:</p>
+<pre tabindex="0"><code>auto_reg = AutoReg(ts.y,
+                   lags=7,
+                   trend=&#39;t&#39;,
+                   seasonal=False,
+                   period=7)
+</code></pre><p>![[professional/know_how/stat_modeling/attachments/visualization (5).png]]</p>
+<p>Any number of lags above seven, and we see no improvement. Although not shown,
+the model with <code>lags=7</code> and <code>seasonal=True</code> with <code>period=7</code> looks identical to
+the  <code>seasonal=True</code>, <code>period=7</code> model with <code>lags=4</code> above, suggesting that the
+$x_{t-p}$ and $s_d$ terms are collinear.</p>
+<p><code>statsmodels.tsa.ar_model.AutoReg</code> interprets <code>period=7</code> as the <em>longest step</em>
+from one data point to the next in the DataFrame; shorter steps from 1 to $p-1$
+are also included. We think that something happens every 7th observation in the
+sequence, and  <code>AutoReg</code> checks whether anything
+happens on shorter cadences. As discussed in detail below, whether those <em>steps</em>
+correspond to a meaningful time interval or period depends on the structure of
+the sequence.</p>
+<p>Look at the coefficients by applying the <code>.params</code> method to the fitted model
+object; e.g., with <code>lags=2</code>, <code>seasonal=True</code>, and <code>period=7</code>:
+![[Pasted image 20221003171824.png]]</p>
+<p>Note that with <code>period</code> and <code>lags</code> set to an integer, multiple terms are
+included up to that value: e.g., $[1, \text{lags}]$. Unlike <code>period</code>, you may
+provide a list of integers for <code>lags</code>, in which case <em>only</em> those lags are
+included. As expected, we find the <code>seasonal.6</code> coefficient to be higher
+than
+those of narrower periodicities. It&rsquo;s also no accident that seasonal components
+0-5&rsquo;s coefficients are <em>similar</em> to each other. We will investigate how this
+model responds to data with multiple periodicities.</p>
+<p>Continuing on with sanity checks, no matter the length of the sequence, as long
+as there are more data points than <code>lags</code> (and other parameters), the model will
+fit properly. Here, we have data over a three-month period.
+![[visualization (6).png]]</p>
+<p><code>statsmodels.tsa</code> does not require the time or sequence index to be of
+a <code>datetime</code> dtype. Replacing datetimes by integers, we obtain the same
+result (not shown). But note that <code>AutoReg</code> is not being explicitly given a
+sequence or time variable; it is implicit in the <code>pandas.Series</code> index of <code>ts.y</code>
+, so the algorithm is unaware of the change in the time column <code>ts.t</code> . If we
+remove a small number of points at random such that there are gaps in the index,
+the model falls apart (not shown). Can we make the seasonal regression algorithm
+aware that observations are made on calendar days?</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>points <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>idx_mask <span style="color:#f92672">=</span> numpy<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>randint(<span style="color:#ae81ff">0</span>, len(ts), points)
+</span></span><span style="display:flex;"><span>ts <span style="color:#f92672">=</span> ts[<span style="color:#f92672">~</span>ts<span style="color:#f92672">.</span>index<span style="color:#f92672">.</span>isin(idx_mask)]
+</span></span></code></pre></div><p>Incidentally, avoid <code>df.sample(frac=0.9)</code>, as it shuffles the rows.</p>
+<p>Setting the index with the datetime-formatted values (maintaining the five
+randomly placed gaps) leads
+to <code>ValueWarning: A date index has been provided, but it has no associated frequency information and so will be ignored when e.g. forecasting.</code>
+The predictions from <code>.predict()</code> are all null.</p>
+<p>What matters is a logical correspondence between <code>period</code> and the frequency of
+the data as presented by their sequence in the array or DataFrame. Let&rsquo;s
+say <code>period=7</code>; if the frequency is unspecified, the algorithm considers if
+a data point six steps from the current point tends to be higher, lower, or
+about the same as the current point. If the data happen to be observations
+recorded every nanosecond with a perturbation every 13 ns, <code>period=13</code> should
+fit that sequence nicely. This naive behavior is helpful for modeling
+observations that occur with a regularity that is meaningful, if not in a
+temporal way. For example, every fourth trip to buy groceries, the family goes
+to Costco, not Trader Joe&rsquo;s. But it poses a problem for incomplete and irregular
+sequences when effects pertain to certain fixed time qualities.</p>
+<p>When <code>.set_index('dt_col')</code> involves a datetime column, we obtain
+a <code>DateTimeIndex</code> with <code>freq=None</code>, which <code>statsmodels.tsa.ar_model</code>
+complains about. We can specify the frequency</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>ts <span style="color:#f92672">=</span> ts<span style="color:#f92672">.</span>set_index(<span style="color:#e6db74">&#39;t&#39;</span>)<span style="color:#f92672">.</span>asfreq(<span style="color:#e6db74">&#39;d&#39;</span>)
+</span></span></code></pre></div><p>Having reproduced the result shown in Exhibit A with a complete data set indexed
+in this way, we return to the case where points are randomly missing; remove
+them <em>prior to</em> setting the datetime index and frequency. Here, we introduce a
+potential problem. As an aside, <code>.asfreq('B')</code> sets an index to daily business
+day. <code>.asfreq</code> can be applied to a DataFrame; it will return the DataFrame
+&ldquo;reindexed to the specified frequency.&rdquo;
+Meaning the &ldquo;original data conformed to a new index with the specified
+frequency.&rdquo;  In this case, to conform to daily frequency, rows of <code>nan</code> are
+placed where time points were missing. Before and after applying <code>.asfreq('d')</code>:
+![[Pasted image 20221004101943.png]]
+![[Pasted image 20221004102013.png]]</p>
+<p><code>AutoReg</code> will raise a <code>MissingDataError: exog contains inf or nans</code>, resolvable
+by including <code>missing='drop'</code>. And yet even though we have a <code>DatetimeIndex</code>
+with <code>freq='D'</code>, we still get
+a <code>ValueWarning: A date index has been provided, but it has no associated frequency information</code>
+. Instead of a <code>DatetimeIndex</code> with <code>.asfreq('d')</code>, we can try a <code>PeriodIndex</code>,
+a subclass of <code>Index</code> that is regularly spaced:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>ts<span style="color:#f92672">.</span>set_index(<span style="color:#e6db74">&#39;t&#39;</span>, inumpylace<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>ts<span style="color:#f92672">.</span>index <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DatetimeIndex(ts<span style="color:#f92672">.</span>index)<span style="color:#f92672">.</span>to_period(<span style="color:#e6db74">&#39;D&#39;</span>)
+</span></span></code></pre></div><pre tabindex="0"><code>PeriodIndex([&#39;2022-01-01&#39;, &#39;2022-01-02&#39;, &#39;2022-01-03&#39;, &#39;2022-01-04&#39;,
+             &#39;2022-01-05&#39;, &#39;2022-01-06&#39;, &#39;2022-01-07&#39;, &#39;2022-01-08&#39;,
+             &#39;2022-01-09&#39;, &#39;2022-01-10&#39;,
+             ...
+             &#39;2022-12-22&#39;, &#39;2022-12-23&#39;, &#39;2022-12-24&#39;, &#39;2022-12-25&#39;,
+             &#39;2022-12-26&#39;, &#39;2022-12-27&#39;, &#39;2022-12-28&#39;, &#39;2022-12-29&#39;,
+             &#39;2022-12-30&#39;, &#39;2022-12-31&#39;],
+            dtype=&#39;period[D]&#39;, name=&#39;t&#39;, length=360, freq=&#39;D&#39;)
+</code></pre><p>We still have gaps in the time series, but no <code>nan</code> have been inserted:
+![[Pasted image 20221004104608.png]]</p>
+<p>It is unnecessary to include <code>missing='drop'</code> in <code>AutoReg()</code>, since the data has
+no missing values (it is good practice to include <code>missing='raise'</code> as
+a check).  <code>.fit()</code> runs and <code>.predict()</code> returns values without altering the
+input data structure: it still has a <code>PeriodIndex</code>:
+![[Pasted image 20221004105317.png]]</p>
+<p>Did the model fit well? While the <code>PeriodIndex</code> facilitated the fit, it
+complicates plotting with Altair. Assuming the index needs to be reset into a
+column, a <code>PeriodIndex</code>  resets to a column of <code>'period[D]' </code>dtype, which
+causes a <code>TypeError</code>. After fitting the model with <code>PeriodIndex</code>-ed data,
+reformat the index:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>ts<span style="color:#f92672">.</span>index <span style="color:#f92672">=</span> ts<span style="color:#f92672">.</span>index<span style="color:#f92672">.</span>to_timestamp()
+</span></span></code></pre></div><p>You will lose the <code>freq</code> and have a <code>DatetimeIndex</code> once again. Then reset
+<em>that</em> index and plot as usual.
+![[professional/know_how/stat_modeling/attachments/visualization (2) 1.png]]
+![[Pasted image 20221004121816.png]]
+Our model did not capture the Friday signal as before, presumably because it
+naively assumed every $7\cdot n^{th}$ point was Friday, ignoring the days
+skipped in the index. Note how the parameters&rsquo; seasonal components are written
+as <code>s(1, 7)</code>, whereas before it was <code>seasonal.0</code>. The connotation is that we&rsquo;re
+capturing effects that occur every 1st of 7 days.</p>
+<p>We&rsquo;ve tried two ways to structure our data such that <code>statsmodels.tsa</code> is aware
+of timing. But this data transformation did not apparently raise such awareness,
+as the model failed to fit the elevated values on Fridays. It could not even use
+the <code>DateTimeIndex</code> with a daily frequency. All of these observations suggest
+that what ultimately matters to <code>statsmodels.tsa</code> is the numerical index of the
+table; row 6 means Friday, whether the Tuesday before is missing or not (in
+which case Friday is actually in row 5). To the machine, they are all just row
+indices, not days.</p>
+<p>Notice how the model suggests a stronger signal around day 7, adjoined by
+expectation of signal quite a bit before; the behavior is smeared or muddled.
+Absence of even a handful of time points throws off the periodicity of this time
+series.</p>
+<p>This is a practical problem, as there are bound to be missing time points,
+either random or systematic (e.g., transactions on business days only). A path
+forward would be to have all dates present and put zeroes where no transactions
+occurred (does a package like <code>tbats</code> do this?). For some
+systematic effects like weekend dormancy, the model should fit coefficients on
+those days accordingly; i.e., $\beta_{s(5)}$ and $\beta_{s(6)}$ should be close
+to zero. Holidays are another systematic effect we would need an exogenous
+binary variable to capture to avoid errors in seasonal effect estimates.
+Lastly, randomly occurring times without transactions will rationally be
+factored in by $\beta_{s(t)}$ to the extent they occur.</p>
+<p>Using <code>.asfreq</code> to conform a daily time series of 365 points minus 10 removed at
+random to a <code>DatetimeIndex</code>-ed dataframe with <code>freq='D'</code>, we get a good fit.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>ts <span style="color:#f92672">=</span> ts<span style="color:#f92672">.</span>asfreq(<span style="color:#e6db74">&#39;d&#39;</span>)
+</span></span><span style="display:flex;"><span>ts<span style="color:#f92672">.</span>fillna(<span style="color:#ae81ff">0</span>, inplace<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>auto_reg <span style="color:#f92672">=</span> AutoReg(ts<span style="color:#f92672">.</span>y,
+</span></span><span style="display:flex;"><span>                   missing<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;raise&#39;</span>,
+</span></span><span style="display:flex;"><span>                   lags<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>                   trend<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;t&#39;</span>,
+</span></span><span style="display:flex;"><span>                   seasonal<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>,
+</span></span><span style="display:flex;"><span>                   period<span style="color:#f92672">=</span><span style="color:#ae81ff">7</span>,
+</span></span><span style="display:flex;"><span>                   old_names<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>,
+</span></span><span style="display:flex;"><span>                   )
+</span></span><span style="display:flex;"><span>auto_reg0 <span style="color:#f92672">=</span> auto_reg<span style="color:#f92672">.</span>fit()
+</span></span><span style="display:flex;"><span>ts<span style="color:#f92672">.</span>loc[:, <span style="color:#e6db74">&#39;y_hat&#39;</span>] <span style="color:#f92672">=</span> auto_reg0<span style="color:#f92672">.</span>predict()
+</span></span></code></pre></div><p>![[Pasted image 20221004163931.png]]</p>
+<p>The coefficient 2.37 is lower than 2.55 for the fit of the complete dataset,
+which suggests that some Fridays may have been zeroed out by the data
+preparation. But as long as such a random effect is not too prevalent, the
+autoregression should provide reasonable results. Here the incidence of
+missing days is about 3%.</p>
+<p>Another method may allow discrete seasonality, rather than the
+inclusive/cumulative sort employed by <code>AutoReg</code>. The choice involves whether
+to use autoregression plus seasonality versus engineered features in a
+multivariate regression.</p>
+<p>For example, no matter how many time points are absent, if we encode Friday
+correctly, that feature will light up on this artificial data set, and so is a
+more reliable approach than an autoregressive seasonality model. Since
+it cannot include custom features, the <code>AutoReg</code> class is more suitable for EDA
+than deployment as an estimator or forecasting service.</p>
+<blockquote>
+<p>No matter what method we choose, we need to verify, using synthetic data, that
+the choice and its parameters is congruent with the <em>structure</em> of our sequence
+data.</p>
+</blockquote>
+<p>What if the signal boost occurred <em>every other</em> Friday? s(7,7) = 1.5, while
+other seasonal variables are similar to before, although a bit elevated (0.51 to
+0.56); what seems to have happened is a halving of the Friday effect. The model
+is unaware of what week each transaction occurred.
+![[visualization (8).png]]</p>
+<p>Increasing <code>period</code> to 15 leads to worse results, probably due to how larger
+interval effects do not consistently align to even or odd Fridays across months
+of the year. In sum, if we believe such specific periodic effects are there, or
+conversely want to probe for them, we should simply encode it as a binary
+variable consistent with how the data are prepared. The coefficients on those
+variables from the regression provide the evidence. From there, we can decide
+whether to remove extraneous variables, to improve our estimates of the
+remaining effects. To probe for surprises in production, we may deploy the more
+inclusive, though, problematic (collinearity, etc.) alongside the selected
+model.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://drwaterx.github.io/til/tags/modeling/">modeling</a></li>
+      <li><a href="https://drwaterx.github.io/til/tags/statsmodels/">statsmodels</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://drwaterx.github.io/til/">Aaron&#39;s D4ta blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

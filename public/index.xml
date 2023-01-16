@@ -8,14 +8,13 @@
     <language>en-us</language>
     <lastBuildDate>Sun, 08 Jan 2023 15:18:18 -0500</lastBuildDate><atom:link href="https://drwaterx.github.io/til/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Explainable insights from linear regression of time series</title>
-      <link>https://drwaterx.github.io/til/posts/practical_primer_ts/</link>
+      <title>Explainable insights from sequence regression</title>
+      <link>https://drwaterx.github.io/til/posts/practical_ts01/</link>
       <pubDate>Sun, 08 Jan 2023 15:18:18 -0500</pubDate>
       
-      <guid>https://drwaterx.github.io/til/posts/practical_primer_ts/</guid>
-      <description>This post is under construction, with missing graphs and unbaked LaTax math.
-It&amp;rsquo;s a cliche that linear models are &amp;ldquo;explainable.&amp;rdquo; And yet, when we attempt to produce insights that are salient to business, and produce them from the kind of data representing, let&amp;rsquo;s say, tens of thousands of cases, you will quickly find characteristics of the data that appreciably erode the veracity and salience of supposed insights.
-This is especially the case when applying canned routines in general, and I&amp;rsquo;ve found, time series &amp;lsquo;forecasting&amp;rsquo; packages in particular.</description>
+      <guid>https://drwaterx.github.io/til/posts/practical_ts01/</guid>
+      <description>Note: Charts are under construction.
+Business considerations Linear models are among the most explainable, and yet producing insights salient to business problems is not trivial. Adopt a simple formulation, and a direct interpretation of parameters will require multiple footnotes to bridge the gap between what is meaningful on the terms of learned associations and what can confirm or alter a manager&amp;rsquo;s point of view and strategy. Adopt a more complex formulation and, well, you must have amazing infrastructure.</description>
     </item>
     
     <item>
