@@ -8,7 +8,6 @@ tags: ["modeling", "statsmodels"]
 categories: ["technical"]
 ---
 
-Note: Charts are under construction.
 
 # Business considerations
 
@@ -110,18 +109,6 @@ than erasing it for the sake of stationarity.
 
 A good starting point is the `AutoReg` class of `statsmodels.tsa.ar_model`.
 
-```python
-from statsmodels.tsa.api import acf, graphics, pacf
-from statsmodels.tsa.ar_model import AutoReg
-
-auto_reg = AutoReg(data,
-                   lags=3,
-                   seasonal=True,
-                   period=7,
-                   )
-auto_reg0 = auto_reg.fit()
-```
-
 [A worked example](https://www.statsmodels.
 org/dev/examples/notebooks/generated/autoregressions.html?highlight=ar_select_order)
 in the `statsmodels` documentation does not show how each component
@@ -152,64 +139,56 @@ patterns. Create one year of daily
 timestamps and initialize the observations with random numbers $\in (0, 1)$. For
 other possibilities, see also `sklego.datasets.make_simpleseries`.
 
-```python
-days = numpy.arange('2022-01-01', '2023-01-01', dtype='datetime64[D]')
-print(
-    f'There are {len(days)} days in the year 2022 (start {days.min()}; end {days.max()}).')
+var spec = {{ stage0 }}
 
-ts = pd.DataFrame({'t': days,  # numpy.linspace(1, 100, 100)
-                   'y': numpy.random.random(len(days))}
-                  )
-```
-
-![[professional/know_how/stat_modeling/attachments/visualization.png]]
+We'll work with several functions that are available in the project repo.
 
 Encode a time characteristic, such as day of the week (dow) and boost the signal
 on certain days (or weeks, etc.). Here, we spike the signal on Fridays and
-experiment with the `seasonal` and `period` parameters.  The charts are 
+experiment with the `seasonal` and `period` parameters.  The charts are
 produced by Altair.
 
 ```python
-ts.loc[:, 'dow'] = ts.t.dt.weekday
-ts.y = ts.y + numpy.where(ts.dow == 4, 2, 0)
-
-auto_reg = AutoReg(ts.y,
-                   lags=4,
-                   trend='t',
-                   seasonal=False,
-                   period=7,
-                   )
-auto_reg0 = auto_reg.fit()
-ts.loc[:, 'y_hat'] = auto_reg0.predict()
+ts = artifice()
+ts = seq_ordinal(ts)
+ts = signal_boost(ts,every_other_week=False)
+s1model, s1params, _, stage1 = run_autoreg(ts.y,
+                                           lags_=2,
+                                           seasonal_=False,
+                                           )
 ```
+
+Here's a sample of our input data.
+
+{{ s1data }}
 
 With `seasonal=False`, we obtain an upwardly trending oscillation:
-![[professional/know_how/stat_modeling/attachments/visualization (1).png]]
+
+var spec = {{ stage1 }}
 
 Enable `seasonal`, and we get the expected level baseline with weekly peaks:
-__Exhibit A__
-![[professional/know_how/stat_modeling/attachments/visualization (2).png]]
 
-If we set `period=365`, we get
-a `ValueError: The model specification cannot be estimated. The model contains 370 regressors (1 trend, 365 seasonal, 4 lags) but after adjustment for hold_back and creation of the lags, there are only 361 data points available to estimate parameters.`
+```python
+_, s2params, _, stage2 = run_autoreg(ts.y,
+                     lags_=4,
+                     seasonal_=True,
+                     period_=7
+                    )
+```
 
-And if we set to a feasible, but wrong value -- `period=30`  -- we will get a
-somewhat better result than without any periodicity, but clearly missing the
-effect:
-![[professional/know_how/stat_modeling/attachments/visualization (4).png]]
+var spec = {{ stage2 }}
 
-Interestingly, if we increase `lags=7` to include the weekly effect, we get
+If we increase `lags=7` to include the weekly effect, we get
 almost as good a model as with seasonal terms:
 
-```
-auto_reg = AutoReg(ts.y,
-                   lags=7,
-                   trend='t',
-                   seasonal=False,
-                   period=7)
+```python
+_, s3params, _, stage3 = run_autoreg(ts.y,
+                     lags_=7,
+                     seasonal_=False,
+                    )
 ```
 
-![[professional/know_how/stat_modeling/attachments/visualization (5).png]]
+var spec = {{ stage3 }}
 
 Any number of lags above seven, and we see no improvement. Although not shown,
 the model with `lags=7` and `seasonal=True` with `period=7` looks identical to
@@ -226,21 +205,17 @@ the sequence.
 
 Look at the coefficients by applying the `.params` method to the fitted model
 object; e.g., with `lags=2`, `seasonal=True`, and `period=7`:
-![[Pasted image 20221003171824.png]]
+
+{{ s4params }}
 
 Note that with `period` and `lags` set to an integer, multiple terms are
 included up to that value: e.g., $[1, \text{lags}]$. Unlike `period`, you may
 provide a list of integers for `lags`, in which case _only_ those lags are
 included. As expected, we find the `seasonal.6` coefficient to be higher 
 than
-those of narrower periodicities. It's also no accident that seasonal components
+those of narrower periodicity. It's also no accident that seasonal components
 0-5's coefficients are _similar_ to each other. We will investigate how this
-model responds to data with multiple periodicities.
-
-Continuing on with sanity checks, no matter the length of the sequence, as long
-as there are more data points than `lags` (and other parameters), the model will
-fit properly. Here, we have data over a three-month period.
-![[visualization (6).png]]
+model responds to data with multiple periods.
 
 `statsmodels.tsa` does not require the time or sequence index to be of
 a `datetime` dtype. Replacing datetimes by integers, we obtain the same
@@ -252,12 +227,8 @@ the model falls apart (not shown). Can we make the seasonal regression algorithm
 aware that observations are made on calendar days?
 
 ```python
-points = 5
-idx_mask = numpy.random.randint(0, len(ts), points)
-ts = ts[~ts.index.isin(idx_mask)]
+ts, idx_mask = abscond(ts, points=5)
 ```
-
-Incidentally, avoid `df.sample(frac=0.9)`, as it shuffles the rows.
 
 Setting the index with the datetime-formatted values (maintaining the five
 randomly placed gaps) leads
@@ -280,11 +251,7 @@ When `.set_index('dt_col')` involves a datetime column, we obtain
 a `DateTimeIndex` with `freq=None`, which `statsmodels.tsa.ar_model`
 complains about. We can specify the frequency
 
-```python
-ts = ts.set_index('t').asfreq('d')
-```
-
-Having reproduced the result shown in Exhibit A with a complete data set indexed
+Having reproduced the result shown in Stage 2 with a complete data set indexed
 in this way, we return to the case where points are randomly missing; remove
 them _prior to_ setting the datetime index and frequency. Here, we introduce a
 potential problem. As an aside, `.asfreq('B')` sets an index to daily business
@@ -293,8 +260,18 @@ day. `.asfreq` can be applied to a DataFrame; it will return the DataFrame
 Meaning the "original data conformed to a new index with the specified
 frequency."  In this case, to conform to daily frequency, rows of `nan` are
 placed where time points were missing. Before and after applying `.asfreq('d')`:
-![[Pasted image 20221004101943.png]]
-![[Pasted image 20221004102013.png]]
+
+__Before__
+
+{{ s5_before_asfreq }}
+
+__After__
+
+```python
+ts = ts.set_index('t').asfreq('d')
+```
+
+{{ s5_after_asfreq }}
 
 `AutoReg` will raise a `MissingDataError: exog contains inf or nans`, resolvable
 by including `missing='drop'`. And yet even though we have a `DatetimeIndex`
@@ -304,7 +281,7 @@ a `ValueWarning: A date index has been provided, but it has no associated freque
 a subclass of `Index` that is regularly spaced:
 
 ```python
-ts.set_index('t', inumpylace=True)
+ts.set_index('t', inplace=True)
 ts.index = pd.DatetimeIndex(ts.index).to_period('D')
 ```
 
@@ -320,17 +297,26 @@ PeriodIndex(['2022-01-01', '2022-01-02', '2022-01-03', '2022-01-04',
 ```
 
 We still have gaps in the time series, but no `nan` have been inserted:
-![[Pasted image 20221004104608.png]]
+
+{{ s5_periodIndex }}
 
 It is unnecessary to include `missing='drop'` in `AutoReg()`, since the data has
 no missing values (it is good practice to include `missing='raise'` as
 a check).  `.fit()` runs and `.predict()` returns values without altering the
 input data structure: it still has a `PeriodIndex`:
-![[Pasted image 20221004105317.png]]
+
+```python
+_, s5params, ts5, stage5 = run_autoreg(ts.y,
+                                       lags_=7,
+                                       seasonal_=False,
+                                      )
+```
+
+{{ ts5md }}
 
 Did the model fit well? While the `PeriodIndex` facilitated the fit, it
 complicates plotting with Altair. Assuming the index needs to be reset into a
-column, a `PeriodIndex`  resets to a column of `'period[D]' `dtype, which
+column, a `PeriodIndex`  resets to a column of `'period[D]'` dtype, which
 causes a `TypeError`. After fitting the model with `PeriodIndex`-ed data,
 reformat the index:
 
@@ -340,8 +326,11 @@ ts.index = ts.index.to_timestamp()
 
 You will lose the `freq` and have a `DatetimeIndex` once again. Then reset 
 _that_ index and plot as usual.
-![[professional/know_how/stat_modeling/attachments/visualization (2) 1.png]]
-![[Pasted image 20221004121816.png]]
+
+var spec = {{ stage5 }}
+
+{{ s5params }}
+
 Our model did not capture the Friday signal as before, presumably because it
 naively assumed every $7\cdot n^{th}$ point was Friday, ignoring the days
 skipped in the index. Note how the parameters' seasonal components are written
@@ -374,25 +363,20 @@ Lastly, randomly occurring times without transactions will rationally be
 factored in by $\beta_{s(t)}$ to the extent they occur.
 
 Using `.asfreq` to conform a daily time series of 365 points minus 10 removed at
-random to a `DatetimeIndex`-ed dataframe with `freq='D'`, we get a good fit.
+random to a `DatetimeIndex`-ed dataframe with `freq='D'`, we get one of our 
+better fits.
 
 ```python
 ts = ts.asfreq('d')
 ts.fillna(0, inplace=True)
-
-auto_reg = AutoReg(ts.y,
-                   missing='raise',
-                   lags=2,
-                   trend='t',
-                   seasonal=True,
-                   period=7,
-                   old_names=False,
-                   )
-auto_reg0 = auto_reg.fit()
-ts.loc[:, 'y_hat'] = auto_reg0.predict()
+_, s6params, _, stage6 = run_autoreg(ts.y,
+                                     lags_=2,
+                                     seasonal_=True,
+                                     period=7
+                                     )
 ```
 
-![[Pasted image 20221004163931.png]]
+{{ s6params }}
 
 The coefficient 2.37 is lower than 2.55 for the fit of the complete dataset,
 which suggests that some Fridays may have been zeroed out by the data
@@ -419,7 +403,8 @@ What if the signal boost occurred _every other_ Friday? s(7,7) = 1.5, while
 other seasonal variables are similar to before, although a bit elevated (0.51 to
 0.56); what seems to have happened is a halving of the Friday effect. The model
 is unaware of what week each transaction occurred.
-![[visualization (8).png]]
+
+var spec = {{ stage7 }}
 
 Increasing `period` to 15 leads to worse results, probably due to how larger
 interval effects do not consistently align to even or odd Fridays across months
