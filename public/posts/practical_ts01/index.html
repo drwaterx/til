@@ -336,7 +336,9 @@ weeks per year, imputing zeroes where needed?</li>
 patterns. Create one year of daily
 timestamps and initialize the observations with random numbers $\in (0, 1)$. For
 other possibilities, see also <code>sklego.datasets.make_simpleseries</code>.</p>
-<p>var spec = {
+<p><div id="vis"></div>
+      <script type="text/javascript">
+          var spec = {
 &ldquo;$schema&rdquo;: &ldquo;<a href="https://vega.github.io/schema/vega-lite/v4.8.1.json%22">https://vega.github.io/schema/vega-lite/v4.8.1.json&quot;</a>,
 &ldquo;config&rdquo;: {
 &ldquo;view&rdquo;: {
@@ -17004,7 +17006,8 @@ in this series, we ask the model to learn how to relax periodic effects.</p>
         });
     });
 
-</script>
+</script>vegaEmbed('#vis', spec);
+      </script>
 <script>
     var mybutton = document.getElementById("top-link");
     window.onscroll = function () {
