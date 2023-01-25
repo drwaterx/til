@@ -61,7 +61,8 @@ Given negative numbers and zeroes, NumPy will output NaN and -inf, respectively,
 
 <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
 <script src="https://cdn.jsdelivr.net/npm/vega-lite@4.8.1"></script>
-<script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script><meta property="og:title" content="Handle non-sensical operations to avoid downstream errors" />
+<script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+<meta property="og:title" content="Handle non-sensical operations to avoid downstream errors" />
 <meta property="og:description" content="When attempting to log-transform an array of values with NumPy, keep in mind
 Given negative numbers and zeroes, NumPy will output NaN and -inf, respectively, along with a RuntimeWarning. Such values can cause downstream processing to fail or behave unexpectedly. numpy.log provides an argument to handle this situation How that argument affects numpy.log&rsquo;s behavior depends on whether the output goes to a preexisting container or if that container is created on the fly." />
 <meta property="og:type" content="article" />

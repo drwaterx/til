@@ -62,7 +62,8 @@ txns = pd.concat([pd.DataFrame({&#39;dt&#39;: pd.date_range(&#34;2022&#34;, freq
 
 <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
 <script src="https://cdn.jsdelivr.net/npm/vega-lite@4.8.1"></script>
-<script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script><meta property="og:title" content="Aggregation: Implications of indexing" />
+<script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+<meta property="og:title" content="Aggregation: Implications of indexing" />
 <meta property="og:description" content="While there are multiple syntaxes and methods to produce the same aggregated data, those variations produce different indices. The format and contents of the index can impact other processes, such as serialization and deserialization.
 Consider the following artificial transactional data.
 txns = pd.concat([pd.DataFrame({&#39;dt&#39;: pd.date_range(&#34;2022&#34;, freq=&#34;D&#34;, periods=10), &#39;amount&#39;: np.random.random(10), &#39;segment&#39;: [&#39;ex&#39;] * 10})] * 10, axis=0) dt amount segment (Timestamp(&lsquo;2022-01-01 00:00:00&rsquo;), 0) 2022-01-01 00:00:00 0.992821 ex (Timestamp(&lsquo;2022-01-01 00:00:00&rsquo;), 0) 2022-01-01 00:00:00 0." />
