@@ -1,7 +1,7 @@
 ---
 title: "Explainable insights from sequence regression"
 date: 2023-01-08T15:18:18-05:00
-draft: false
+draft: true
 author: "Aaron Slowey"
 math: true
 tags: ["modeling", "statsmodels"]
@@ -34,46 +34,49 @@ designing those analytics, which should refine the models' design.
 In this context, I address a detail that can appreciably erode the 
 veracity and salience of model-derived insights.  This erosion is a risk 
 when applying canned routines in general, and time series/forecasting 
-packages in particular.  They abstract away important details, most notably  
+packages in particular.  They abstract away important details, most notably 
 how data are prepared for modeling.  As a result, such packages 
 lead users to implicitly, rather than explicitly, choose parameters that are 
-incongruent with, for example, the temporal structure of
-the time series.  I have not researched it closely, but I fail to see how 
-recent meta-learners that deploy dozens of forecasting algorithms 
-solve this congruence issue, unless they adequately prepare data as well.  
+incongruent with, for example, the sequence event (e.g., temporal) structure of 
+their data.  You can bet that meta-learners that deploy dozens of 
+forecasting algorithms do not get you off the hook from carefully inspecting 
+and preparing data.  
 
-Packages like `statsmodels.tsa` are workhorses, but do not check, for 
-instance, whether a daily time 
+Packages like `statsmodels.tsa` do not check whether a daily time 
 series contains only business days, while the user has specified a 
-'seasonality' period of 7.  When I started using it, I was unsure if 
-it did or not, and so I created artificial data with known 
-infidelities and effects, observed how `statsmodels` responded, and what 
-distortions ensued.  This post is a recounting of some of those experiments.
+'seasonality' period of 7.  I was unsure if 
+it did or not and so created artificial data with known 
+infidelities and effects, observed how an autoregressive `statsmodels.tsa` 
+algorithm responded, and what distortions ensued.  This post 
+recounts this experiment.
 
-The following covers _in-sample_ deconstruction of temporally
-sensitive effects that can be applied to a variety of problems, including 
-forecasting.  The objectives include predicting the future _and_ understanding 
-temporal patterns, for a variety of reasons including explaining models to 
-non-technical managers and assessing the tradeoff between model capacity, 
-maintenance costs, failure risk, and other things that ultimately determine 
-adoption and the delivery of value to an enterprise.
+The following covers _in-sample_ deconstruction of sequentially (temporally)
+sensitive effects that apply to a variety of problems.  The objectives 
+include predicting future events _and_ understanding patterns that we can 
+
+- Explain to non-technical managers
+- Assess the tradeoff between model capacity, maintenance costs, failure 
+  risk, and other value drivers that ought to determine adoption and 
+  delivery of value to an enterprise.
 
 # Setting
 
-We denote a sequence (e.g., time series) model by adding additional 
-subscripts to a multivariate linear regression:
+We denote our sequence (e.g., time series) model as a multivariate linear 
+regression:
 $$y_t = \alpha + \sum_{i=1}^m \beta_i x_{i,t} + \epsilon_t$$
-The properties of variables that constitute $x$ determine what kind of time
-series regression we perform.
+The properties of variables that constitute $x$ determine what kind of 
+regression we perform:
 
 - An auto-regression model includes up to $p$ lags: $x_{t-p}, \ldots, x_{t-1}$
 - A linear trend is included by $x_{1, t} = t$; assuming equally spaced
-  observations, $t$ would be equivalent to `numpy.linspace(1, T)`
+  observations, $t$ would be equivalent to `numpy.linspace(1, T)`, where $T$ 
+  is the longest duration or last time point.
 - Day of week is achieved by having one binary variable for all but one day;
   i.e., $x_{i, t}=1$ if the observation occurs on a particular day and zero
   otherwise. For any categorical variable having $k$ unique values, include
-  $k-1$ binary variables into the model. So if we leave out Sunday, $x_{Monday,
-  t}$ measures the effect of Monday on $y$ _compared to the effect of Sunday_.
+  $k-1$ binary variables into the model. So if we leave out Sunday, $x_
+  {\text{Monday},t}$ measures the effect of Monday on $y$ _relative to the 
+  effect of Sunday_.
 - Spike: A dummy variable that is 1 in a specific period, zero before and after
 - Step: A dummy variable that is zero up to a point, 1 from that point on. 
   Similar for a change in slope.
@@ -81,13 +84,13 @@ series regression we perform.
 As with its `OLS` class, you can apply statsmodels' `.summary()` method to the 
 fitted `tsa` model object, as well as `.plot_predict(start=t0, end=t1)`.
 
-The 'errors' should
+The errors should
 
-- Be normally distributed with mean zero and a constant variance 
-- Not be auto-, or serially, correlated; checks include the Breusch-Godfrey or 
+- Be normally distributed with mean zero and constant variance 
+- Not be auto-(serially) correlated; checks include the Breusch-Godfrey or 
   Lagrange Multiplier test, in which a small `p-value` indicates significant 
   autocorrelation remains.
-- Unrelated to the predictors
+- Be unrelated to the predictors
 
 Apply `.plot_diagnostics()` to the fitted model object to obtain  
 some of these diagnostics.
@@ -96,26 +99,30 @@ some of these diagnostics.
 analysis. We do not have to use `.tsa` methods to model
 sequence data; multivariate linear regression with univariate lags and time
 characteristic variables could achieve roughly the same model. A variety of
-considerations may determine the choice of model class, such as being
-able to say you used a certain package.
+considerations may determine the choice of model.
 
 In any case, we are tackling the challenge of building a linear model with
 familiar performance criteria. The most profound difference is that the
 observations are possibly auto-correlated, not I.I.D., but this may 'normalize'
-out by including lags and time characteristics (seasonal components).  
+out by including lags and time characteristics (seasonal components). 
 Alternatively, we may model the (fractional) differences between observations.  
 Some problems may call for harnessing the 'memory' of a time series, rather 
-than erasing it for the sake of stationarity. 
+than erasing it to achieve stationarity.  The larger point is -- don't take 
+anyone's claim that you must prepare data a certain way for certain models, 
+whether that be made in a book or blog ;).  Understand why, for example, 
+stationarity is important (or not) for _your_ problem, or what different 
+preparations and models can, in combination, reveal about the underlying 
+phenomena you are attempting to decipher.
 
-A good starting point is the `AutoReg` class of `statsmodels.tsa.ar_model`.
+A reasonable starting point is the `AutoReg` class of `statsmodels.tsa.
+ar_model`.
 
-[A worked example](https://www.statsmodels.
-org/dev/examples/notebooks/generated/autoregressions.html?highlight=ar_select_order)
+[A worked example](https://www.statsmodels.org/dev/examples/notebooks/generated/autoregressions.html?highlight=ar_select_order)
 in the `statsmodels` documentation does not show how each component
 manifests and how parameters affect the fit. That ambiguity ends here.
 
-To what extent do `statsmodels` implementations
-include utilities that recognize and utilize `datetimes`? The work presented 
+To what extent do `statsmodels.tsa` algorithms or utilities recognize and 
+utilize `datetimes`? The work presented 
 here suggests not at all, despite warnings when `seasonal=True`
 but `period` is unspecified. To obtain expected behavior from statistical
 learning algorithms, it is crucial to know and potentially modify the sequential

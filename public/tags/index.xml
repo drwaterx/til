@@ -6,25 +6,7 @@
     <description>Recent content in Tags on Aaron&#39;s D4ta blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 08 Jan 2023 15:18:18 -0500</lastBuildDate><atom:link href="https://drwaterx.github.io/til/tags/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>modeling</title>
-      <link>https://drwaterx.github.io/til/tags/modeling/</link>
-      <pubDate>Sun, 08 Jan 2023 15:18:18 -0500</pubDate>
-      
-      <guid>https://drwaterx.github.io/til/tags/modeling/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>statsmodels</title>
-      <link>https://drwaterx.github.io/til/tags/statsmodels/</link>
-      <pubDate>Sun, 08 Jan 2023 15:18:18 -0500</pubDate>
-      
-      <guid>https://drwaterx.github.io/til/tags/statsmodels/</guid>
-      <description></description>
-    </item>
-    
+    <lastBuildDate>Thu, 05 Jan 2023 05:15:02 -0500</lastBuildDate><atom:link href="https://drwaterx.github.io/til/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>numpy</title>
       <link>https://drwaterx.github.io/til/tags/numpy/</link>
