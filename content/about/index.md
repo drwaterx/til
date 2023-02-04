@@ -5,12 +5,42 @@ draft: false
 author: "Aaron Slowey"
 ---
 
-Today I learned something, and I learned it because I wrote about it to uncover what I still need to learn.  And I'm sharing it with you for no other reason than it may be helpful for you to retrace the steps of _my_ thought process, compare it to your own, and reach your own understanding.
+In my day-to-day practice, I tackle a dizzying array of technical problems to 
+learn and argue to non-technical managers whether and how data analytics can 
+solve their problems.  Technical writing has been critical for me to quickly 
+solve 
+those problems and not be consumed by them, leaving 
+ time to think about data strategy, model identification, and other 
+higher value problems.
 
-That retreading has been helpful to me.
+I have always been a note taker, but my practice has evolved over the 
+past two years, thanks in part to markdown and Obsidian, into a more 
+coherent, linked knowledge base of practical know-how spanning statistical 
+modeling, data engineering, and machine learning engineering.
 
-What I write about are solutions to problems I confront in my job, which at the moment involves processing and modeling commercial cash flows.  I try not to write about data processing as a generalizable technique, since those are covered in Stack Overflow and elsewhere.  In my writings, I expose the constraints involved in implementing a technique and the trade-offs that stem from them.
+To posts on this site `til`, which stands for "Today I Learned...", are 
+attempts to make notes to my future self accessible to others who may want 
+to increase their awareness of opportunities to solve problems they may not 
+have had a chance to discover yet through professional practice.
 
-I welcome feedback, ideas, and opportunities to compare notes and collaborate; message me on [Linkedin](https://www.linkedin.com/in/aslowey).
+Experience is a great teacher, as it forces you to learn and retain information 
+while giving you the motivation to do so.  What I write about are solutions 
+to problems I confront in my job. I try not to
+write about data processing as a generalizable technique, since those are
+covered in Stack Overflow and elsewhere. In my writings, I expose the
+constraints involved in implementing a technique and the trade-offs that stem
+from them.
 
-I began my career as an actual scientist, in public service as a research geochemist.  For reasons nearly anyone can imagine, I pivoted to the private sector, taking an MBA to rewire and recalibrate.  Steadily moving to the financial sector while teaching myself data science, data engineering, how to code, and how to manage those who code, I currently build regression models on time series of business' cash flows, along with data ingestion pipelines and validation and reporting modules.
+I welcome feedback, ideas, and opportunities to compare notes and collaborate;
+message me on [Linkedin](https://www.linkedin.com/in/aslowey).
+
+## Bio
+
+I began my career as a scientist in the field of environmental geochemistry, 
+working in governmental research settings after getting my PhD. 
+For reasons nearly anyone should be able to imagine, I pivoted to the private
+sector, taking an MBA to rewire and recalibrate. Steadily moving to the
+financial sector while teaching myself _data_ science and engineering, how to
+code, and how to manage those who code, I currently build models on
+various financial data, along with data ingestion pipelines and
+validation and reporting modules.
