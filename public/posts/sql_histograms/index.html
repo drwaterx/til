@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Histograms? SQL has you covered | Aaron&#39;s D4ta blog</title>
+<meta name="keywords" content="SQL, warehouse">
+<meta name="description" content="TL;DR Binning data with SQL to plot histograms may seem an odd choice to using a DataFrame method such as df.hist() in Pandas, but it can be done, and delegating the task to your data warehouse can save space and time when data sets are large and continually updating. I extend other tutorials with a bin scalar that adapts to multiple groups within a table.
+SQL frequency distributions Some, perhaps a majority, of data scientists are more comfortable programming in Python, and particularly pandas, than SQL.">
+<meta name="author" content="Aaron Slowey">
+<link rel="canonical" href="https://drwaterx.github.io/til/posts/sql_histograms/">
+<link crossorigin="anonymous" href="/til/assets/css/stylesheet.bccfefac377bc340f06c260aed1bddf49a4354816d7c570d6aac75a997986c95.css" integrity="sha256-vM/vrDd7w0DwbCYK7Rvd9JpDVIFtfFcNaqx1qZeYbJU=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/til/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://drwaterx.github.io/til/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://drwaterx.github.io/til/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://drwaterx.github.io/til/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://drwaterx.github.io/til/apple-touch-icon.png">
+<link rel="mask-icon" href="https://drwaterx.github.io/til/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+      integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0"
+      crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+        integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4"
+        crossorigin="anonymous"></script>
+<script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+        integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05"
+        crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        renderMathInElement(document.body, {
+            
+            
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true}
+            ],
+            
+            throwOnError: false
+        });
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-lite@4.8.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+<meta property="og:title" content="Histograms? SQL has you covered" />
+<meta property="og:description" content="TL;DR Binning data with SQL to plot histograms may seem an odd choice to using a DataFrame method such as df.hist() in Pandas, but it can be done, and delegating the task to your data warehouse can save space and time when data sets are large and continually updating. I extend other tutorials with a bin scalar that adapts to multiple groups within a table.
+SQL frequency distributions Some, perhaps a majority, of data scientists are more comfortable programming in Python, and particularly pandas, than SQL." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://drwaterx.github.io/til/posts/sql_histograms/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-03-05T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-03-05T00:00:00+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Histograms? SQL has you covered"/>
+<meta name="twitter:description" content="TL;DR Binning data with SQL to plot histograms may seem an odd choice to using a DataFrame method such as df.hist() in Pandas, but it can be done, and delegating the task to your data warehouse can save space and time when data sets are large and continually updating. I extend other tutorials with a bin scalar that adapts to multiple groups within a table.
+SQL frequency distributions Some, perhaps a majority, of data scientists are more comfortable programming in Python, and particularly pandas, than SQL."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://drwaterx.github.io/til/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Histograms? SQL has you covered",
+      "item": "https://drwaterx.github.io/til/posts/sql_histograms/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Histograms? SQL has you covered",
+  "name": "Histograms? SQL has you covered",
+  "description": "TL;DR Binning data with SQL to plot histograms may seem an odd choice to using a DataFrame method such as df.hist() in Pandas, but it can be done, and delegating the task to your data warehouse can save space and time when data sets are large and continually updating. I extend other tutorials with a bin scalar that adapts to multiple groups within a table.\nSQL frequency distributions Some, perhaps a majority, of data scientists are more comfortable programming in Python, and particularly pandas, than SQL.",
+  "keywords": [
+    "SQL", "warehouse"
+  ],
+  "articleBody": "TL;DR Binning data with SQL to plot histograms may seem an odd choice to using a DataFrame method such as df.hist() in Pandas, but it can be done, and delegating the task to your data warehouse can save space and time when data sets are large and continually updating. I extend other tutorials with a bin scalar that adapts to multiple groups within a table.\nSQL frequency distributions Some, perhaps a majority, of data scientists are more comfortable programming in Python, and particularly pandas, than SQL. That is certainly the case for me. However, over the past several months, I have been ‘forced’ to tap into the power of SQL for analytical tasks such as selecting subjects having a groupwise statistical summary of an attribute exceeding a threshold. Other fields are then joined to the IDs of the qualifying subjects provided by such a common table expression (CTE).\nAnother more incisive analytical task is to create the data required to visualize a histogram (frequency distribution). The intent is to divide the range of a variable of interest into equally spaced intervals or bins, and then count how many instances of that variable fall into each bin. Let’s briefly cover how we might do this with Python.\nGenerally, it is good practice to store such data, rather than temporarily caching it en route to a chart. For example, numpy.histogram() can return the bin boundaries and associated counts, which you would pass to a plotting function. This is preferable to calling, for example, pandas’ df.col1.hist(), which will return a static chart but no data. A nice alternative would be to use Altair, which would store the frequency data in a JSON object while at the same time visualizing the histogram. In sum, there’s at least a couple good options to derive and persist frequency distributions within the Python ecosystem. But the preliminary step of loading the underlying instances could be sufficiently cumbersome to warrant using a data warehouse to distill those instances down to just the data needed to plot the histograms.\nWhat do I mean by cumbersome? I cannot claim you will ever find loading your data to be so, given the massively parallel processing (MPP) databases and other computing resources you use. It’s fair to say, though, that many people work with more modest infrastructure, such that the following approach could be helpful.\nAlthough this post is written to be self-contained, if you want to run the code I provide below, you’ll need to obtain a data set that has the following characteristics:\nHas at least one continuously numeric variable Has one or more categorical variables Has more than one subject; i.e., unique combinations of the categorical variables A simple example would be a table containing the prices of several firms’ daily stock returns over an extended period of time. Our objective is to obtain the data needed to plot the frequency distribution of each firm’s daily returns. Another example could be the sediment concentration of phosphorous in streams draining various agricultural locales.\nHere’s what each of the following CTEs is doing:\nquantiles computes the quantile (percentile) of each stock’s price over a specified period. You can replace the double curly brackets and enclosed text with your chosen values. I use the current syntax for jinja to insert values into the SQL query from a Python program, as this facilitates logging and other tasks that I use Python for. Note that percentile_cont can be implemented in at least two ways; here, we rely on the group by clause to ensure the percentile is computed for each stock’s prices, rather than all of the prices in the table. The other method would have been to include over (partition by ticker) with the percentile_cont clause. The pros and cons of each approach are beyond the scope of this post.\nThe next CTE prices, particularly the line floor(t.price / nullif(round(q.price_quantile), 0)) * round(q.price_quantile) is the heart of this query. FLOOR(n) returns the largest integer equal to or less than n. By multiplying the floor() of the quotient by the divisor, we obtain the lower bound of the bin. For example, the value 632 will be labeled with a bin_floor of 600 if the quantile was 100. To obtain the upper bound, we add the same value, which would yield 700.\nWhile you could hard-code the divisor, we employ the quantile to reasonably scale the width of the bins for each subject, which we do not know in advance. I suggest using the $10^{th}$ percentile. Values less than 1 such as 0.6 will get floored to zero, in which case that instance will bin to the interval 0-Divisor.\nnullif prevents a divide-by-zero error; it is one of Oracle Database’s shorthands for case when. It produces null when two arguments are equal; in this context, when price_quantile=0.\nIn CTE bins, the count(price) and group by bin_floor counts all instances labeled with each whole number obtained by floor(t.price / nullif(round(q.price_quantile), 0)) * round(q.price_quantile) in CTE prices. Depending on your database software, you may be able to combine this with the previous CTE.\nCTE combo is largely for testing purposes to check that the bin floor is consistent with the price quantile, etc. In the main query, the second clause creates a new field that can be used as an axis label.\nwith quantiles as ( SELECT ticker, date_, PERCENTILE_CONT({{ qtile }}) WITHIN GROUP (ORDER BY price) as price_quantile from stock_data WHERE AND date_ BETWEEN to_date({{ date_start }}, 'YYYY-MM-DD') AND to_date({{ date_end }}, 'YYYY-MM-DD') GROUP BY ticker ) , prices as ( SELECT t.ticker, t.date_, t.price, q.price_quantile, floor(t.price / nullif(round(q.price_quantile), 0)) * round(q.price_quantile) as bin_floor FROM stock_data t JOIN quantiles q ON t.ticker = q.ticker AND t.date_ = q.date_ ) , bins as ( select ticker, date_, bin_floor, count(price) as price_count from prices group by ticker, date_, bin_floor ) , combo as ( select b.ticker, b.date_, q.price_quantile, b.bin_floor, b.price_count from quantiles q join bins b on q.ticker = b.ticker and q.date_ = b.date_ ) ---- Main query: Tabulate the bin counts and create a column of bin labels select ticker, date_, bin_floor || ' - ' || (bin_floor + round(price_quantile)) as bin_range, price_count from combo order by ticker, date_, bin_floor ",
+  "wordCount" : "1033",
+  "inLanguage": "en",
+  "datePublished": "2023-03-05T00:00:00Z",
+  "dateModified": "2023-03-05T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Aaron Slowey"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://drwaterx.github.io/til/posts/sql_histograms/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Aaron's D4ta blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://drwaterx.github.io/til/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://drwaterx.github.io/til/" accesskey="h" title="Aaron&#39;s D4ta blog (Alt + H)">Aaron&#39;s D4ta blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://drwaterx.github.io/til/about/" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://drwaterx.github.io/til/tags" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      Histograms? SQL has you covered
+    </h1>
+    <div class="post-meta"><span title='2023-03-05 00:00:00 +0000 UTC'>March 5, 2023</span>&nbsp;·&nbsp;Aaron Slowey
+
+</div>
+  </header> 
+  <div class="post-content"><h2 id="tldr">TL;DR<a hidden class="anchor" aria-hidden="true" href="#tldr">#</a></h2>
+<p>Binning data with SQL to plot histograms may seem an odd choice to using a DataFrame method such as <code>df.hist()</code> in Pandas, but it can be done, and delegating the task to your data warehouse can save space and time when data sets are large and continually updating.  I extend other tutorials with a bin scalar that adapts to multiple groups within a table.</p>
+<h2 id="sql-frequency-distributions">SQL frequency distributions<a hidden class="anchor" aria-hidden="true" href="#sql-frequency-distributions">#</a></h2>
+<p>Some, perhaps a majority, of data scientists are more comfortable programming in Python, and particularly pandas, than SQL.  That is certainly the case for me.  However, over the past several months, I have been &lsquo;forced&rsquo; to tap into the power of SQL for analytical tasks such as selecting subjects having a groupwise statistical summary of an attribute exceeding a threshold.  Other fields are then joined to the IDs of the qualifying subjects provided by such a common table expression (CTE).</p>
+<p>Another more incisive analytical task is to create the data required to visualize a histogram (frequency distribution).  The intent is to divide the range of a variable of interest into equally spaced intervals or bins, and then count how many instances of that variable fall into each bin.  Let&rsquo;s briefly cover how we might do this with Python.</p>
+<p>Generally, it is good practice to store such data, rather than temporarily caching it en route to a chart.  For example, <code>numpy.histogram()</code> can return the bin boundaries and associated counts, which you would pass to a plotting function.  This is preferable to calling, for example, pandas&rsquo; <code>df.col1.hist()</code>, which will return a static chart but no data.  A nice alternative would be to use Altair, which would store the frequency data in a JSON object while at the same time visualizing the histogram.  In sum, there&rsquo;s at least a couple good options to derive and persist frequency distributions within the Python ecosystem.  But the preliminary step of loading the underlying instances could be sufficiently cumbersome to warrant using a data warehouse to distill those instances down to just the data needed to plot the histograms.</p>
+<p>What do I mean by cumbersome?  I cannot claim you will ever find loading your data to be so, given the massively parallel processing (MPP) databases and other computing resources you use.  It&rsquo;s fair to say, though, that many people work with more modest infrastructure, such that the following approach could be helpful.</p>
+<p>Although this post is written to be self-contained, if you want to run the code I provide below, you&rsquo;ll need to obtain a data set that has the following characteristics:</p>
+<ul>
+<li>Has at least one continuously numeric variable</li>
+<li>Has one or more categorical variables</li>
+<li>Has more than one subject; i.e., unique combinations of the categorical variables</li>
+</ul>
+<p>A simple example would be a table containing the prices of several firms&rsquo; daily stock returns over an extended period of time.  Our objective is to obtain the data needed to plot the frequency distribution of each firm&rsquo;s daily returns.  Another example could be the sediment concentration of phosphorous in streams draining various agricultural locales.</p>
+<p>Here&rsquo;s what each of the following CTEs is doing:</p>
+<p><code>quantiles</code> computes the quantile (percentile) of each stock&rsquo;s price over a specified period.  You can replace the double curly brackets and enclosed text with your chosen values.  I use the current syntax for jinja to insert values into the SQL query from a Python program, as this facilitates logging and other tasks that I use Python for.  Note that <code>percentile_cont</code> can be implemented in at least two ways; here, we rely on the <code>group by</code> clause to ensure the percentile is computed for each stock&rsquo;s prices, rather than all of the prices in the table.  The other method would have been to include <code>over (partition by ticker)</code> with the <code>percentile_cont</code> clause.  The pros and cons of each approach are beyond the scope of this post.</p>
+<p>The next CTE <code>prices</code>, particularly the line <code>floor(t.price / nullif(round(q.price_quantile), 0)) * round(q.price_quantile)</code> is the heart of this query.  <code>FLOOR(n)</code> returns the largest integer equal to or less than <code>n</code>. By multiplying the <code>floor()</code> of the quotient by the divisor, we obtain the lower bound of the bin.  For example, the value 632 will be labeled with a <code>bin_floor</code> of <code>600</code> if the quantile was 100.  To obtain the upper bound, we add the same value, which would yield <code>700</code>.</p>
+<p>While you could hard-code the divisor, we employ the quantile to reasonably scale the width of the bins for each subject, which we do not know in advance.  I suggest using the $10^{th}$ percentile. Values less than 1 such as 0.6 will get floored to zero, in which case that instance will bin to the interval <code>0-Divisor</code>.</p>
+<p><code>nullif</code> prevents a divide-by-zero error; it is one of Oracle Database&rsquo;s shorthands for <code>case when</code>.  It produces <code>null</code> when two arguments are equal; in this context, when <code>price_quantile=0</code>.</p>
+<p>In CTE <code>bins</code>, the <code>count(price)</code> and group by <code>bin_floor</code> counts all instances labeled with each whole number obtained by <code>floor(t.price / nullif(round(q.price_quantile), 0)) * round(q.price_quantile)</code> in CTE <code>prices</code>.  Depending on your database software, you may be able to combine this with the previous CTE.</p>
+<p>CTE <code>combo</code> is largely for testing purposes to check that the bin floor is consistent with the price quantile, etc.  In the main query, the second clause creates a new field that can be used as an axis label.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">with</span> quantiles
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">as</span> (
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">SELECT</span>
+</span></span><span style="display:flex;"><span>    ticker,
+</span></span><span style="display:flex;"><span>    date_,
+</span></span><span style="display:flex;"><span>    PERCENTILE_CONT(<span style="color:#960050;background-color:#1e0010">{{</span> qtile <span style="color:#960050;background-color:#1e0010">}}</span>) WITHIN <span style="color:#66d9ef">GROUP</span> (<span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> price) <span style="color:#66d9ef">as</span> price_quantile
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">from</span> stock_data
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">WHERE</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">AND</span> date_ <span style="color:#66d9ef">BETWEEN</span> to_date(<span style="color:#960050;background-color:#1e0010">{{</span> date_start <span style="color:#960050;background-color:#1e0010">}}</span>, <span style="color:#e6db74">&#39;YYYY-MM-DD&#39;</span>)
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">AND</span> to_date(<span style="color:#960050;background-color:#1e0010">{{</span> date_end <span style="color:#960050;background-color:#1e0010">}}</span>, <span style="color:#e6db74">&#39;YYYY-MM-DD&#39;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span>
+</span></span><span style="display:flex;"><span>    ticker
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>, prices <span style="color:#66d9ef">as</span> (
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">SELECT</span>
+</span></span><span style="display:flex;"><span>    t.ticker,
+</span></span><span style="display:flex;"><span>    t.date_,
+</span></span><span style="display:flex;"><span>    t.price,
+</span></span><span style="display:flex;"><span>    q.price_quantile,
+</span></span><span style="display:flex;"><span>    floor(t.price <span style="color:#f92672">/</span> <span style="color:#66d9ef">nullif</span>(round(q.price_quantile), <span style="color:#ae81ff">0</span>)) <span style="color:#f92672">*</span> round(q.price_quantile) <span style="color:#66d9ef">as</span> bin_floor
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">FROM</span> stock_data t <span style="color:#66d9ef">JOIN</span> quantiles q
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">ON</span> t.ticker <span style="color:#f92672">=</span> q.ticker <span style="color:#66d9ef">AND</span> t.date_ <span style="color:#f92672">=</span> q.date_
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>, bins
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">as</span> (
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">select</span>
+</span></span><span style="display:flex;"><span>    ticker,
+</span></span><span style="display:flex;"><span>    date_,
+</span></span><span style="display:flex;"><span>    bin_floor,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">count</span>(price) <span style="color:#66d9ef">as</span> price_count
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">from</span> prices
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">group</span> <span style="color:#66d9ef">by</span> ticker, date_, bin_floor
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>, combo
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">as</span> (
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">select</span>
+</span></span><span style="display:flex;"><span>  b.ticker,
+</span></span><span style="display:flex;"><span>  b.date_,
+</span></span><span style="display:flex;"><span>  q.price_quantile,
+</span></span><span style="display:flex;"><span>  b.bin_floor,
+</span></span><span style="display:flex;"><span>  b.price_count
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> quantiles q <span style="color:#66d9ef">join</span> bins b
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">on</span> q.ticker <span style="color:#f92672">=</span> b.ticker
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">and</span> q.date_ <span style="color:#f92672">=</span> b.date_
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">---- Main query: Tabulate the bin counts and create a column of bin labels
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">select</span> 
+</span></span><span style="display:flex;"><span>  ticker,
+</span></span><span style="display:flex;"><span>  date_,
+</span></span><span style="display:flex;"><span>  bin_floor <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39; - &#39;</span> <span style="color:#f92672">||</span> (bin_floor <span style="color:#f92672">+</span> round(price_quantile)) <span style="color:#66d9ef">as</span> bin_range,
+</span></span><span style="display:flex;"><span>  price_count
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> combo
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">order</span> <span style="color:#66d9ef">by</span> ticker, date_, bin_floor
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://drwaterx.github.io/til/tags/sql/">SQL</a></li>
+      <li><a href="https://drwaterx.github.io/til/tags/warehouse/">warehouse</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://drwaterx.github.io/til/">Aaron&#39;s D4ta blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

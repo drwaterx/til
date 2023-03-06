@@ -6,7 +6,43 @@
     <description>Recent content in Tags on Aaron&#39;s D4ta blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 05 Jan 2023 05:15:02 -0500</lastBuildDate><atom:link href="https://drwaterx.github.io/til/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 05 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://drwaterx.github.io/til/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>SQL</title>
+      <link>https://drwaterx.github.io/til/tags/sql/</link>
+      <pubDate>Sun, 05 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://drwaterx.github.io/til/tags/sql/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>warehouse</title>
+      <link>https://drwaterx.github.io/til/tags/warehouse/</link>
+      <pubDate>Sun, 05 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://drwaterx.github.io/til/tags/warehouse/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>modeling</title>
+      <link>https://drwaterx.github.io/til/tags/modeling/</link>
+      <pubDate>Sun, 08 Jan 2023 15:18:18 -0500</pubDate>
+      
+      <guid>https://drwaterx.github.io/til/tags/modeling/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>statsmodels</title>
+      <link>https://drwaterx.github.io/til/tags/statsmodels/</link>
+      <pubDate>Sun, 08 Jan 2023 15:18:18 -0500</pubDate>
+      
+      <guid>https://drwaterx.github.io/til/tags/statsmodels/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>numpy</title>
       <link>https://drwaterx.github.io/til/tags/numpy/</link>

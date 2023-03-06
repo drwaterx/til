@@ -6,7 +6,26 @@
     <description>Recent content in Posts on Aaron&#39;s D4ta blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 05 Jan 2023 05:15:02 -0500</lastBuildDate><atom:link href="https://drwaterx.github.io/til/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 05 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://drwaterx.github.io/til/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Histograms? SQL has you covered</title>
+      <link>https://drwaterx.github.io/til/posts/sql_histograms/</link>
+      <pubDate>Sun, 05 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://drwaterx.github.io/til/posts/sql_histograms/</guid>
+      <description>TL;DR Binning data with SQL to plot histograms may seem an odd choice to using a DataFrame method such as df.hist() in Pandas, but it can be done, and delegating the task to your data warehouse can save space and time when data sets are large and continually updating. I extend other tutorials with a bin scalar that adapts to multiple groups within a table.
+SQL frequency distributions Some, perhaps a majority, of data scientists are more comfortable programming in Python, and particularly pandas, than SQL.</description>
+    </item>
+    
+    <item>
+      <title>Explainable insights from sequence regression</title>
+      <link>https://drwaterx.github.io/til/posts/practical_ts01/</link>
+      <pubDate>Sun, 08 Jan 2023 15:18:18 -0500</pubDate>
+      
+      <guid>https://drwaterx.github.io/til/posts/practical_ts01/</guid>
+      <description>Business considerations Linear models are among the most explainable, and yet producing insights salient to business problems is not trivial. Adopt a simple formulation, and a direct interpretation of parameters will require multiple footnotes to bridge the gap between what is meaningful on the terms of learned associations and what can confirm or alter a manager&amp;rsquo;s point of view and strategy. Adopt a more complex formulation and, well, you must have amazing infrastructure.</description>
+    </item>
+    
     <item>
       <title>Handle non-sensical operations to avoid downstream errors</title>
       <link>https://drwaterx.github.io/til/posts/numpy_nonsense/</link>

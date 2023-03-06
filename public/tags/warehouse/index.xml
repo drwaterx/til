@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>warehouse on Aaron&#39;s D4ta blog</title>
+    <link>https://drwaterx.github.io/til/tags/warehouse/</link>
+    <description>Recent content in warehouse on Aaron&#39;s D4ta blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 05 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://drwaterx.github.io/til/tags/warehouse/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Histograms? SQL has you covered</title>
+      <link>https://drwaterx.github.io/til/posts/sql_histograms/</link>
+      <pubDate>Sun, 05 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://drwaterx.github.io/til/posts/sql_histograms/</guid>
+      <description>TL;DR Binning data with SQL to plot histograms may seem an odd choice to using a DataFrame method such as df.hist() in Pandas, but it can be done, and delegating the task to your data warehouse can save space and time when data sets are large and continually updating. I extend other tutorials with a bin scalar that adapts to multiple groups within a table.
+SQL frequency distributions Some, perhaps a majority, of data scientists are more comfortable programming in Python, and particularly pandas, than SQL.</description>
+    </item>
+    
+  </channel>
+</rss>
