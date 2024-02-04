@@ -7,7 +7,7 @@ tags: ["swe", "mlops"]
 categories: ["technical"]
 ---
 
-__TLDR__; GNU Make and Apache Airflow and two DAG orchestration tools.  `Make` gets the job done and is, without a doubt, simpler than Airflow.  However, conformance to a purely file dependency-based orchestration (`Make`) could require refactoring that Airflow would not.  It's worth learning how to use Airflow (or another abstract orchestration tool), even if you have no immediate need for most of its features.
+__TLDR__; GNU Make and Apache Airflow are two DAG orchestration tools.  `Make` gets the job done and is, without a doubt, simpler than Airflow.  However, conformance to a purely file dependency-based orchestration (`Make`) could require refactoring that Airflow would not.  It's worth learning how to use Airflow (or another abstract orchestration tool), even if you have no immediate need for most of its features.
 
 Every quarter or so, I deliberately slow down to learn and, if I find it worthwhile, incorporate a new way of working.  I keep this to perhaps two days to at most two weeks of sunk cost.  In other words, I spend 10 to 20 percent of my coding time on strategic, rather than tactical, programming.
 

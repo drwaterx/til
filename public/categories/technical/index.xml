@@ -13,7 +13,7 @@
       <link>https://drwaterx.github.io/til/posts/orchestration/</link>
       <pubDate>Sat, 03 Feb 2024 20:56:44 -0500</pubDate>
       <guid>https://drwaterx.github.io/til/posts/orchestration/</guid>
-      <description>TLDR; GNU Make and Apache Airflow and two DAG orchestration tools. Make gets the job done and is, without a doubt, simpler than Airflow. However, conformance to a purely file dependency-based orchestration (Make) could require refactoring that Airflow would not. It&amp;rsquo;s worth learning how to use Airflow (or another abstract orchestration tool), even if you have no immediate need for most of its features.
+      <description>TLDR; GNU Make and Apache Airflow are two DAG orchestration tools. Make gets the job done and is, without a doubt, simpler than Airflow. However, conformance to a purely file dependency-based orchestration (Make) could require refactoring that Airflow would not. It&amp;rsquo;s worth learning how to use Airflow (or another abstract orchestration tool), even if you have no immediate need for most of its features.
 Every quarter or so, I deliberately slow down to learn and, if I find it worthwhile, incorporate a new way of working.</description>
     </item>
     <item>
