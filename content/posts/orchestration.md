@@ -1,9 +1,8 @@
 ---
 title: "Follow your inner conductor: A comparison of file versus abstract dependency-based orchestration"
-date: 2024-02-03
+date: 2024-02-03T20:56:44-05:00
 draft: false
 author: "Aaron Slowey"
-math: false
 tags: ["swe", "mlops"]
 categories: ["technical"]
 ---
