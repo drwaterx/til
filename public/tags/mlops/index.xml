@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>mlops on Aaron&#39;s D4ta blog</title>
+    <link>https://drwaterx.github.io/til/tags/mlops/</link>
+    <description>Recent content in mlops on Aaron&#39;s D4ta blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 03 Feb 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://drwaterx.github.io/til/tags/mlops/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Follow your inner conductor: A comparison of file versus abstract dependency-based orchestration</title>
+      <link>https://drwaterx.github.io/til/posts/orchestration/</link>
+      <pubDate>Sat, 03 Feb 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://drwaterx.github.io/til/posts/orchestration/</guid>
+      <description>TLDR; GNU Make and Apache Airflow and two DAG orchestration tools. Make gets the job done and is, without a doubt, simpler than Airflow. However, conformance to a purely file dependency-based orchestration (Make) could require refactoring that Airflow would not. It&amp;rsquo;s worth learning how to use Airflow (or another abstract orchestration tool), even if you have no immediate need for most of its features.
+Every quarter or so, I deliberately slow down to learn and, if I find it worthwhile, incorporate a new way of working.</description>
+    </item>
+    
+  </channel>
+</rss>

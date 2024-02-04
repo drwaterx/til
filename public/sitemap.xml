@@ -3,24 +3,33 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://drwaterx.github.io/til/</loc>
-    <lastmod>2023-03-05T00:00:00+00:00</lastmod>
+    <lastmod>2024-02-03T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://drwaterx.github.io/til/categories/</loc>
-    <lastmod>2023-03-05T00:00:00+00:00</lastmod>
+    <lastmod>2024-02-03T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://drwaterx.github.io/til/posts/orchestration/</loc>
+    <lastmod>2024-02-03T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://drwaterx.github.io/til/tags/mlops/</loc>
+    <lastmod>2024-02-03T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://drwaterx.github.io/til/posts/</loc>
+    <lastmod>2024-02-03T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://drwaterx.github.io/til/tags/swe/</loc>
+    <lastmod>2024-02-03T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://drwaterx.github.io/til/tags/</loc>
+    <lastmod>2024-02-03T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://drwaterx.github.io/til/categories/technical/</loc>
+    <lastmod>2024-02-03T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://drwaterx.github.io/til/posts/sql_histograms/</loc>
     <lastmod>2023-03-05T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://drwaterx.github.io/til/posts/</loc>
-    <lastmod>2023-03-05T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://drwaterx.github.io/til/tags/sql/</loc>
-    <lastmod>2023-03-05T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://drwaterx.github.io/til/tags/</loc>
-    <lastmod>2023-03-05T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://drwaterx.github.io/til/categories/technical/</loc>
     <lastmod>2023-03-05T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://drwaterx.github.io/til/tags/warehouse/</loc>
