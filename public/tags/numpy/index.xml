@@ -6,25 +6,22 @@
     <description>Recent content in numpy on Aaron&#39;s D4ta blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 05 Jan 2023 05:15:02 -0500</lastBuildDate><atom:link href="https://drwaterx.github.io/til/tags/numpy/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 05 Jan 2023 05:15:02 -0500</lastBuildDate>
+    <atom:link href="https://drwaterx.github.io/til/tags/numpy/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Handle non-sensical operations to avoid downstream errors</title>
       <link>https://drwaterx.github.io/til/posts/numpy_nonsense/</link>
       <pubDate>Thu, 05 Jan 2023 05:15:02 -0500</pubDate>
-      
       <guid>https://drwaterx.github.io/til/posts/numpy_nonsense/</guid>
       <description>When attempting to log-transform an array of values with NumPy, keep in mind
 Given negative numbers and zeroes, NumPy will output NaN and -inf, respectively, along with a RuntimeWarning. Such values can cause downstream processing to fail or behave unexpectedly. numpy.log provides an argument to handle this situation How that argument affects numpy.log&amp;rsquo;s behavior depends on whether the output goes to a preexisting container or if that container is created on the fly.</description>
     </item>
-    
     <item>
       <title>That which is aggregated and its metadata</title>
       <link>https://drwaterx.github.io/til/posts/gbadventures01/</link>
       <pubDate>Fri, 12 Aug 2022 15:14:44 -0500</pubDate>
-      
       <guid>https://drwaterx.github.io/til/posts/gbadventures01/</guid>
       <description>It&amp;rsquo;s impossible to include an associated field value alongside an aggregate of another variable Unlike ndarrays, DataFrames are often heterogeneous. They are a more complete map of how we think of a data set as a whole. When we alter the structure of tabular data, often through aggregation of one field, we want to include values from other fields. This is an example of an issue that arises at the interface of pandas and scikit-learn, for which the ColumnTransformer was created.</description>
     </item>
-    
   </channel>
 </rss>

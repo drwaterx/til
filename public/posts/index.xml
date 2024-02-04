@@ -6,75 +6,62 @@
     <description>Recent content in Posts on Aaron&#39;s D4ta blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 03 Feb 2024 20:56:44 -0500</lastBuildDate><atom:link href="https://drwaterx.github.io/til/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 03 Feb 2024 20:56:44 -0500</lastBuildDate>
+    <atom:link href="https://drwaterx.github.io/til/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Follow your inner conductor: A comparison of file versus abstract dependency-based orchestration</title>
       <link>https://drwaterx.github.io/til/posts/orchestration/</link>
       <pubDate>Sat, 03 Feb 2024 20:56:44 -0500</pubDate>
-      
       <guid>https://drwaterx.github.io/til/posts/orchestration/</guid>
       <description>TLDR; GNU Make and Apache Airflow and two DAG orchestration tools. Make gets the job done and is, without a doubt, simpler than Airflow. However, conformance to a purely file dependency-based orchestration (Make) could require refactoring that Airflow would not. It&amp;rsquo;s worth learning how to use Airflow (or another abstract orchestration tool), even if you have no immediate need for most of its features.
 Every quarter or so, I deliberately slow down to learn and, if I find it worthwhile, incorporate a new way of working.</description>
     </item>
-    
     <item>
       <title>Histograms? SQL has you covered</title>
       <link>https://drwaterx.github.io/til/posts/sql_histograms/</link>
       <pubDate>Sun, 05 Mar 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://drwaterx.github.io/til/posts/sql_histograms/</guid>
       <description>TL;DR Binning data with SQL to plot histograms may seem an odd choice to using a DataFrame method such as df.hist() in Pandas, but it can be done, and delegating the task to your data warehouse can save space and time when data sets are large and continually updating. I extend other tutorials with a bin scalar that adapts to multiple groups within a table.
 SQL frequency distributions Some, perhaps a majority, of data scientists are more comfortable programming in Python, and particularly pandas, than SQL.</description>
     </item>
-    
     <item>
       <title>Explainable insights from sequence regression</title>
       <link>https://drwaterx.github.io/til/posts/practical_ts01/</link>
       <pubDate>Sun, 08 Jan 2023 15:18:18 -0500</pubDate>
-      
       <guid>https://drwaterx.github.io/til/posts/practical_ts01/</guid>
       <description>Business considerations Linear models are among the most explainable, and yet producing insights salient to business problems is not trivial. Adopt a simple formulation, and a direct interpretation of parameters will require multiple footnotes to bridge the gap between what is meaningful on the terms of learned associations and what can confirm or alter a manager&amp;rsquo;s point of view and strategy. Adopt a more complex formulation and, well, you must have amazing infrastructure.</description>
     </item>
-    
     <item>
       <title>Handle non-sensical operations to avoid downstream errors</title>
       <link>https://drwaterx.github.io/til/posts/numpy_nonsense/</link>
       <pubDate>Thu, 05 Jan 2023 05:15:02 -0500</pubDate>
-      
       <guid>https://drwaterx.github.io/til/posts/numpy_nonsense/</guid>
       <description>When attempting to log-transform an array of values with NumPy, keep in mind
 Given negative numbers and zeroes, NumPy will output NaN and -inf, respectively, along with a RuntimeWarning. Such values can cause downstream processing to fail or behave unexpectedly. numpy.log provides an argument to handle this situation How that argument affects numpy.log&amp;rsquo;s behavior depends on whether the output goes to a preexisting container or if that container is created on the fly.</description>
     </item>
-    
     <item>
       <title>Slice well</title>
       <link>https://drwaterx.github.io/til/posts/slices_awry/</link>
       <pubDate>Tue, 15 Nov 2022 11:21:31 -0500</pubDate>
-      
       <guid>https://drwaterx.github.io/til/posts/slices_awry/</guid>
       <description>In this post, I briefly review a few methods to select rows and/or columns of a DataFrame that satisfy one or more criteria. I then introduce two additional requirements that arises frequently in practice&amp;ndash;slicing with previously unknown criteria and managing serialization and deserialization to recover the desired data structure.
 Lever multiIndexes I often find pandas&amp;rsquo; multiIndex to be helpful, although I do not observe it used very often. With a multi-indexed DataFrame, pandas&amp;rsquo; .</description>
     </item>
-    
     <item>
       <title>That which is aggregated and its metadata</title>
       <link>https://drwaterx.github.io/til/posts/gbadventures01/</link>
       <pubDate>Fri, 12 Aug 2022 15:14:44 -0500</pubDate>
-      
       <guid>https://drwaterx.github.io/til/posts/gbadventures01/</guid>
       <description>It&amp;rsquo;s impossible to include an associated field value alongside an aggregate of another variable Unlike ndarrays, DataFrames are often heterogeneous. They are a more complete map of how we think of a data set as a whole. When we alter the structure of tabular data, often through aggregation of one field, we want to include values from other fields. This is an example of an issue that arises at the interface of pandas and scikit-learn, for which the ColumnTransformer was created.</description>
     </item>
-    
     <item>
       <title>Aggregation: Implications of indexing</title>
       <link>https://drwaterx.github.io/til/posts/gbadventures02/</link>
       <pubDate>Fri, 22 Jul 2022 14:34:27 -0500</pubDate>
-      
       <guid>https://drwaterx.github.io/til/posts/gbadventures02/</guid>
       <description>While there are multiple syntaxes and methods to produce the same aggregated data, those variations produce different indices. The format and contents of the index can impact other processes, such as serialization and deserialization.
 Consider the following artificial transactional data.
 txns = pd.concat([pd.DataFrame({&amp;#39;dt&amp;#39;: pd.date_range(&amp;#34;2022&amp;#34;, freq=&amp;#34;D&amp;#34;, periods=10), &amp;#39;amount&amp;#39;: np.random.random(10), &amp;#39;segment&amp;#39;: [&amp;#39;ex&amp;#39;] * 10})] * 10, axis=0) dt amount segment (Timestamp(&amp;lsquo;2022-01-01 00:00:00&amp;rsquo;), 0) 2022-01-01 00:00:00 0.992821 ex (Timestamp(&amp;lsquo;2022-01-01 00:00:00&amp;rsquo;), 0) 2022-01-01 00:00:00 0.</description>
     </item>
-    
   </channel>
 </rss>

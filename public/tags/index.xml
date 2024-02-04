@@ -6,96 +6,77 @@
     <description>Recent content in Tags on Aaron&#39;s D4ta blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 03 Feb 2024 20:56:44 -0500</lastBuildDate><atom:link href="https://drwaterx.github.io/til/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 03 Feb 2024 20:56:44 -0500</lastBuildDate>
+    <atom:link href="https://drwaterx.github.io/til/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>mlops</title>
       <link>https://drwaterx.github.io/til/tags/mlops/</link>
       <pubDate>Sat, 03 Feb 2024 20:56:44 -0500</pubDate>
-      
       <guid>https://drwaterx.github.io/til/tags/mlops/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>swe</title>
       <link>https://drwaterx.github.io/til/tags/swe/</link>
       <pubDate>Sat, 03 Feb 2024 20:56:44 -0500</pubDate>
-      
       <guid>https://drwaterx.github.io/til/tags/swe/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>SQL</title>
       <link>https://drwaterx.github.io/til/tags/sql/</link>
       <pubDate>Sun, 05 Mar 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://drwaterx.github.io/til/tags/sql/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>warehouse</title>
       <link>https://drwaterx.github.io/til/tags/warehouse/</link>
       <pubDate>Sun, 05 Mar 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://drwaterx.github.io/til/tags/warehouse/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>modeling</title>
       <link>https://drwaterx.github.io/til/tags/modeling/</link>
       <pubDate>Sun, 08 Jan 2023 15:18:18 -0500</pubDate>
-      
       <guid>https://drwaterx.github.io/til/tags/modeling/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>statsmodels</title>
       <link>https://drwaterx.github.io/til/tags/statsmodels/</link>
       <pubDate>Sun, 08 Jan 2023 15:18:18 -0500</pubDate>
-      
       <guid>https://drwaterx.github.io/til/tags/statsmodels/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>numpy</title>
       <link>https://drwaterx.github.io/til/tags/numpy/</link>
       <pubDate>Thu, 05 Jan 2023 05:15:02 -0500</pubDate>
-      
       <guid>https://drwaterx.github.io/til/tags/numpy/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>exception handling</title>
       <link>https://drwaterx.github.io/til/tags/exception-handling/</link>
       <pubDate>Tue, 15 Nov 2022 11:21:31 -0500</pubDate>
-      
       <guid>https://drwaterx.github.io/til/tags/exception-handling/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>pandas</title>
       <link>https://drwaterx.github.io/til/tags/pandas/</link>
       <pubDate>Tue, 15 Nov 2022 11:21:31 -0500</pubDate>
-      
       <guid>https://drwaterx.github.io/til/tags/pandas/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>data management</title>
       <link>https://drwaterx.github.io/til/tags/data-management/</link>
       <pubDate>Fri, 22 Jul 2022 14:34:27 -0500</pubDate>
-      
       <guid>https://drwaterx.github.io/til/tags/data-management/</guid>
       <description></description>
     </item>
-    
   </channel>
 </rss>

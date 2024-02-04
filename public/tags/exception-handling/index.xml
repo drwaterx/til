@@ -6,16 +6,15 @@
     <description>Recent content in exception handling on Aaron&#39;s D4ta blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 15 Nov 2022 11:21:31 -0500</lastBuildDate><atom:link href="https://drwaterx.github.io/til/tags/exception-handling/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 15 Nov 2022 11:21:31 -0500</lastBuildDate>
+    <atom:link href="https://drwaterx.github.io/til/tags/exception-handling/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Slice well</title>
       <link>https://drwaterx.github.io/til/posts/slices_awry/</link>
       <pubDate>Tue, 15 Nov 2022 11:21:31 -0500</pubDate>
-      
       <guid>https://drwaterx.github.io/til/posts/slices_awry/</guid>
       <description>In this post, I briefly review a few methods to select rows and/or columns of a DataFrame that satisfy one or more criteria. I then introduce two additional requirements that arises frequently in practice&amp;ndash;slicing with previously unknown criteria and managing serialization and deserialization to recover the desired data structure.
 Lever multiIndexes I often find pandas&amp;rsquo; multiIndex to be helpful, although I do not observe it used very often. With a multi-indexed DataFrame, pandas&amp;rsquo; .</description>
     </item>
-    
   </channel>
 </rss>
